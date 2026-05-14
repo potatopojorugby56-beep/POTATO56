@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Script Realm | Community</title>
+    <title>Script Realm | Public Upload</title>
     <!-- Supabase Library -->
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <link href="https://fonts.googleapis.com/css2?family=VT323&family=Inter:wght@400;600&display=swap" rel="stylesheet">
@@ -11,38 +11,25 @@
         :root { --bg: #07030e; --panel: #110722; --purple: #9d00ff; --light: #d68aff; }
         body { background: var(--bg); color: #e0e0e0; font-family: 'Inter', sans-serif; margin: 0; padding: 0; }
         .pixel { font-family: 'VT323', monospace; text-transform: uppercase; letter-spacing: 1px; }
-        header { padding: 20px; border-bottom: 1px solid var(--purple); display: flex; justify-content: space-between; align-items: center; background: rgba(0,0,0,0.8); }
-        .hidden { display: none !important; }
+        header { padding: 20px; border-bottom: 1px solid var(--purple); background: rgba(0,0,0,0.8); text-align: center; }
         .container { max-width: 600px; margin: 40px auto; padding: 20px; }
         input, textarea { width: 100%; padding: 12px; background: #000; border: 1px solid #3d1b63; color: #fff; border-radius: 4px; margin-bottom: 10px; box-sizing: border-box; }
-        button { background: transparent; color: var(--light); border: 1px solid var(--purple); padding: 10px 20px; cursor: pointer; border-radius: 4px; font-family: 'VT323', monospace; font-size: 18px; text-transform: uppercase; }
-        button:hover { background: var(--purple); color: #fff; box-shadow: 0 0 10px var(--purple); }
-        .script-card { background: var(--panel); border: 1px solid #3d1b63; padding: 20px; border-radius: 8px; margin-bottom: 20px; position: relative; }
+        button { background: transparent; color: var(--light); border: 1px solid var(--purple); padding: 10px 20px; cursor: pointer; border-radius: 4px; font-family: 'VT323', monospace; font-size: 18px; text-transform: uppercase; width: 100%; }
+        button:hover { background: var(--purple); color: #fff; box-shadow: 0 0 15px var(--purple); }
+        .script-card { background: var(--panel); border: 1px solid #3d1b63; padding: 20px; border-radius: 8px; margin-bottom: 20px; }
         .script-title { color: var(--light); margin: 0; font-size: 24px; }
         .script-desc { font-size: 14px; color: #8b8b8b; margin: 10px 0; }
+        .copy-btn { width: auto; margin-top: 10px; }
     </style>
 </head>
 <body>
 
     <header>
         <h1 class="pixel" style="color:var(--light); margin:0;">SCRIPT REALM</h1>
-        <button id="logoutBtn" class="hidden" onclick="logout()">Logout</button>
     </header>
 
-    <!-- Auth Section -->
-    <div id="authUI" class="container">
-        <h2 class="pixel">Access the Realm</h2>
-        <input type="email" id="email" placeholder="Email Address">
-        <input type="password" id="password" placeholder="Password">
-        <div style="display:flex; gap:10px;">
-            <button onclick="login()">Login</button>
-            <button onclick="signUp()">Sign Up</button>
-        </div>
-        <p style="font-size: 12px; color: #8b8b8b; margin-top: 20px;">*Sign up requires email confirmation unless disabled in Supabase settings.</p>
-    </div>
-
-    <!-- Main Content Section -->
-    <div id="mainUI" class="container hidden">
+    <div class="container">
+        <!-- Upload Form (Always Visible Now) -->
         <section style="background:var(--panel); padding:20px; border-radius:8px; border: 1px solid var(--purple); margin-bottom: 30px;">
             <h2 class="pixel" style="margin-top:0;">Publish New Script</h2>
             <input type="text" id="scriptName" placeholder="Title (e.g. Delta Auto-Farm)">
@@ -51,55 +38,75 @@
             <button onclick="uploadScript()">Publish Script</button>
         </section>
 
-        <h2 class="pixel">Recent Community Scripts</h2>
-        <div id="feed"></div>
+        <h2 class="pixel">Community Scripts</h2>
+        <div id="feed">Loading scripts...</div>
     </div>
 
     <script>
         // --- CONFIGURATION ---
-        // Replace with your info from Supabase Project Settings > API
         const supabaseUrl = 'https://pgzrmmrkgxefocxdcxli.supabase.co';
         const supabaseKey = 'sb_publishable_dwlWhrgvEF6ngaJ5I0OXZA_hQ0F_Gij'; 
         const _supabase = supabase.createClient(supabaseUrl, supabaseKey);
 
-        const authUI = document.getElementById('authUI');
-        const mainUI = document.getElementById('mainUI');
-        const logoutBtn = document.getElementById('logoutBtn');
+        // --- DATABASE LOGIC ---
+        async function uploadScript() {
+            const name = document.getElementById('scriptName').value;
+            const description = document.getElementById('scriptDesc').value;
+            const code = document.getElementById('scriptCode').value;
 
-        // --- AUTH LOGIC ---
-        async function signUp() {
-            const email = document.getElementById('email').value;
-            const password = document.getElementById('password').value;
-            const { error } = await _supabase.auth.signUp({ email, password });
-            if (error) alert("Error: " + error.message);
-            else alert("Success! Check your email to confirm your account.");
-        }
+            if(!name || !code) return alert("Title and Script Code are required!");
 
-        async function login() {
-            const email = document.getElementById('email').value;
-            const password = document.getElementById('password').value;
-            const { error } = await _supabase.auth.signInWithPassword({ email, password });
-            if (error) alert("Login Failed: " + error.message);
-            else checkUser();
-        }
-
-        async function logout() {
-            await _supabase.auth.signOut();
-            checkUser();
-        }
-
-        async function checkUser() {
-            const { data: { user } } = await _supabase.auth.getUser();
-            if (user) {
-                authUI.classList.add('hidden');
-                mainUI.classList.remove('hidden');
-                logoutBtn.classList.remove('hidden');
-                loadScripts();
+            const { error } = await _supabase.from('scripts').insert([{ name, description, code }]);
+            
+            if (error) {
+                alert("Upload Error: " + error.message);
+                console.error(error);
             } else {
-                authUI.classList.remove('hidden');
-                mainUI.classList.add('hidden');
-                logoutBtn.classList.add('hidden');
+                alert("Script Published!");
+                document.getElementById('scriptName').value = '';
+                document.getElementById('scriptDesc').value = '';
+                document.getElementById('scriptCode').value = '';
+                loadScripts();
             }
+        }
+
+        async function loadScripts() {
+            const { data, error } = await _supabase.from('scripts').select('*').order('created_at', { ascending: false });
+            if (error) {
+                document.getElementById('feed').innerText = "Error loading scripts. Check your Supabase Policies.";
+                return console.error(error);
+            }
+
+            const feed = document.getElementById('feed');
+            feed.innerHTML = '';
+
+            if (data.length === 0) {
+                feed.innerHTML = "<p style='text-align:center; color:#8b8b8b;'>No scripts found in the Realm yet.</p>";
+            }
+
+            data.forEach(item => {
+                const card = document.createElement('div');
+                card.className = 'script-card';
+                card.innerHTML = `
+                    <h3 class="pixel script-title">${item.name}</h3>
+                    <p class="script-desc">${item.description || 'No description.'}</p>
+                    <button class="copy-btn" onclick="copyCode(\`${item.code.replace(/`/g, '\\`').replace(/\$/g, '\\$')}\`)">Copy Code</button>
+                `;
+                feed.appendChild(card);
+            });
+        }
+
+        function copyCode(code) {
+            navigator.clipboard.writeText(code).then(() => {
+                alert("Script copied to clipboard!");
+            });
+        }
+
+        // Load scripts immediately on page open
+        loadScripts();
+    </script>
+</body>
+</html>            }
         }
 
         // --- DATABASE LOGIC ---
