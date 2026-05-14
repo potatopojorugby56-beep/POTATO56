@@ -32,6 +32,7 @@
             width: 100%; padding: 12px; background: rgba(0, 0, 0, 0.3);
             border: 1px solid rgba(255, 255, 255, 0.1); color: white;
             border-radius: 8px; margin-bottom: 10px; box-sizing: border-box;
+            font-family: inherit;
         }
 
         button.primary-btn {
@@ -46,30 +47,33 @@
             padding: 15px; border-radius: 12px; margin-bottom: 15px;
         }
 
-        .card-header { display: flex; justify-content: space-between; align-items: flex-start; }
+        .card-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; }
         .script-title { font-family: 'Orbitron', sans-serif; font-size: 1.1rem; margin: 0; color: #fff; }
         
         .copy-btn {
-            background: rgba(255,255,255,0.05); border: 1px solid var(--accent);
-            color: var(--text-main); padding: 5px 10px; border-radius: 6px;
+            background: rgba(255,255,255,0.1); border: 1px solid var(--accent);
+            color: var(--text-main); padding: 6px 12px; border-radius: 6px;
             cursor: pointer; font-size: 14px; display: flex; align-items: center; gap: 5px;
         }
 
-        .script-desc { color: var(--text-dim); font-size: 0.85rem; margin: 8px 0; }
+        .script-desc { color: var(--text-dim); font-size: 0.85rem; margin-bottom: 10px; }
 
-        /* The "See More" Code Block */
+        /* Hidden Code Wrapper */
         .code-wrapper {
             margin-top: 10px; display: none; /* Hidden by default */
-            background: #000; border-radius: 6px; padding: 10px;
+            background: #000; border-radius: 6px; padding: 15px;
             border: 1px solid #331452; overflow-x: auto;
         }
 
-        pre { margin: 0; font-family: monospace; font-size: 12px; color: #bc13fe; white-space: pre-wrap; word-break: break-all; }
+        .code-wrapper pre { 
+            margin: 0; font-family: 'Courier New', monospace; font-size: 12px; 
+            color: #bc13fe; white-space: pre-wrap; word-break: break-all; 
+        }
 
         .toggle-btn {
             background: transparent; border: none; color: var(--accent);
             cursor: pointer; font-size: 13px; padding: 5px 0;
-            text-decoration: underline; font-weight: 600;
+            text-decoration: underline; font-weight: 600; font-family: inherit;
         }
     </style>
 </head>
@@ -106,7 +110,7 @@
 
         async function loadScripts() {
             const { data, error } = await _supabase.from('scripts').select('*').order('created_at', { ascending: false });
-            if (error) { document.getElementById('feed').innerText = "Error loading."; return; }
+            if (error) { document.getElementById('feed').innerText = "Error loading scripts."; return; }
 
             const feed = document.getElementById('feed');
             feed.innerHTML = '';
@@ -114,39 +118,51 @@
             data.forEach(item => {
                 const card = document.createElement('div');
                 card.className = 'script-card';
-                card.innerHTML = `
-                    <div class="card-header">
-                        <h3 class="script-title">${item.name}</h3>
-                        <button class="copy-btn" onclick="copyCode(this, \`${item.code.replace(/`/g, '\\`').replace(/\$/g, '\\$')}\`)">
-                            📄 Copy
-                        </button>
-                    </div>
-                    <p class="script-desc">${item.description || 'No description.'}</p>
-                    <button class="toggle-btn" onclick="toggleCode(this)">See more...</button>
-                    <div class="code-wrapper">
-                        <pre><code>${item.code}</code></pre>
-                    </div>
-                `;
+                
+                // Create Title Header
+                const header = document.createElement('div');
+                header.className = 'card-header';
+                header.innerHTML = `<h3 class="script-title">${item.name}</h3>`;
+                
+                // Create Copy Button
+                const copyBtn = document.createElement('button');
+                copyBtn.className = 'copy-btn';
+                copyBtn.innerHTML = `📄 Copy`;
+                copyBtn.onclick = () => {
+                    navigator.clipboard.writeText(item.code);
+                    copyBtn.innerHTML = "✅ Copied!";
+                    setTimeout(() => { copyBtn.innerHTML = "📄 Copy"; }, 2000);
+                };
+                header.appendChild(copyBtn);
+                
+                // Create Toggle Button
+                const toggleBtn = document.createElement('button');
+                toggleBtn.className = 'toggle-btn';
+                toggleBtn.innerText = "See more...";
+                
+                // Create Code Area
+                const wrapper = document.createElement('div');
+                wrapper.className = 'code-wrapper';
+                const pre = document.createElement('pre');
+                pre.textContent = item.code; // Securely set the text
+                wrapper.appendChild(pre);
+
+                toggleBtn.onclick = () => {
+                    if (wrapper.style.display === "block") {
+                        wrapper.style.display = "none";
+                        toggleBtn.innerText = "See more...";
+                    } else {
+                        wrapper.style.display = "block";
+                        toggleBtn.innerText = "Hide script";
+                    }
+                };
+
+                card.appendChild(header);
+                card.innerHTML += `<p class="script-desc">${item.description || 'No description.'}</p>`;
+                card.appendChild(toggleBtn);
+                card.appendChild(wrapper);
+                
                 feed.appendChild(card);
-            });
-        }
-
-        function toggleCode(btn) {
-            const wrapper = btn.nextElementSibling;
-            if (wrapper.style.display === "block") {
-                wrapper.style.display = "none";
-                btn.innerText = "See more...";
-            } else {
-                wrapper.style.display = "block";
-                btn.innerText = "Hide script";
-            }
-        }
-
-        function copyCode(btn, code) {
-            navigator.clipboard.writeText(code).then(() => {
-                const originalText = btn.innerHTML;
-                btn.innerHTML = "✅ Copied!";
-                setTimeout(() => { btn.innerHTML = originalText; }, 2000);
             });
         }
 
