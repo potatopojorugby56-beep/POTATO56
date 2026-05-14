@@ -3,151 +3,89 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Script Realm | Community Hub</title>
+    <title>Script Realm | Hub</title>
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&family=Inter:wght@300;400;600&display=swap" rel="stylesheet">
     <style>
         :root {
-            --bg: #0b051a;
-            --card-bg: #160b2e;
-            --accent: #bc13fe;
-            --accent-glow: rgba(188, 19, 254, 0.5);
-            --text-main: #f0f0f0;
-            --text-dim: #a0a0a0;
+            --bg: #0b051a; --card-bg: #160b2e; --accent: #bc13fe;
+            --accent-glow: rgba(188, 19, 254, 0.5); --text-main: #f0f0f0; --text-dim: #a0a0a0;
         }
 
         body {
-            background-color: var(--bg);
+            background-color: var(--bg); color: var(--text-main); font-family: 'Inter', sans-serif;
+            margin: 0; padding: 0; line-height: 1.6;
             background-image: radial-gradient(circle at top, #1c0f3d 0%, var(--bg) 100%);
-            color: var(--text-main);
-            font-family: 'Inter', sans-serif;
-            margin: 0; padding: 0;
-            line-height: 1.6;
         }
 
-        .header {
-            text-align: center;
-            padding: 40px 20px;
-            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
-        }
+        .header { text-align: center; padding: 30px 20px; }
+        .logo { font-family: 'Orbitron', sans-serif; font-size: 2rem; color: #fff; text-shadow: 0 0 15px var(--accent-glow); letter-spacing: 3px; }
+        .container { max-width: 600px; margin: 0 auto; padding: 20px; }
 
-        .logo {
-            font-family: 'Orbitron', sans-serif;
-            font-size: 2.5rem;
-            color: #fff;
-            text-shadow: 0 0 15px var(--accent-glow);
-            margin: 0;
-            letter-spacing: 4px;
-        }
-
-        .container {
-            max-width: 700px;
-            margin: 0 auto;
-            padding: 20px;
-        }
-
-        /* Input Styles */
+        /* Form Styles */
         .glass-panel {
-            background: var(--card-bg);
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            padding: 25px;
-            border-radius: 16px;
-            margin-bottom: 40px;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+            background: var(--card-bg); border: 1px solid rgba(255, 255, 255, 0.1);
+            padding: 20px; border-radius: 12px; margin-bottom: 30px;
         }
-
-        h2 { font-family: 'Orbitron', sans-serif; font-size: 1.2rem; margin-bottom: 20px; color: var(--accent); }
 
         input, textarea {
-            width: 100%;
-            padding: 14px;
-            background: rgba(0, 0, 0, 0.3);
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            color: white;
-            border-radius: 8px;
-            margin-bottom: 15px;
-            box-sizing: border-box;
-            font-size: 16px;
-            transition: 0.3s;
+            width: 100%; padding: 12px; background: rgba(0, 0, 0, 0.3);
+            border: 1px solid rgba(255, 255, 255, 0.1); color: white;
+            border-radius: 8px; margin-bottom: 10px; box-sizing: border-box;
         }
 
-        input:focus, textarea:focus {
-            outline: none;
-            border-color: var(--accent);
-            background: rgba(0, 0, 0, 0.5);
+        button.primary-btn {
+            width: 100%; padding: 12px; background: var(--accent); color: white;
+            border: none; border-radius: 8px; font-family: 'Orbitron', sans-serif;
+            cursor: pointer; font-weight: bold;
         }
 
-        button {
-            width: 100%;
-            padding: 15px;
-            background: var(--accent);
-            color: white;
-            border: none;
-            border-radius: 8px;
-            font-family: 'Orbitron', sans-serif;
-            font-weight: bold;
-            cursor: pointer;
-            transition: 0.3s;
-            text-transform: uppercase;
-        }
-
-        button:hover {
-            box-shadow: 0 0 20px var(--accent-glow);
-            transform: translateY(-2px);
-        }
-
-        /* Feed & Search */
-        #searchBar { margin-bottom: 20px; border-radius: 30px; padding-left: 20px; border-color: var(--accent); }
-
+        /* Script Card Styles */
         .script-card {
-            background: var(--card-bg);
-            border: 1px solid rgba(255, 255, 255, 0.05);
-            padding: 20px;
-            border-radius: 12px;
-            margin-bottom: 20px;
-            transition: 0.3s;
+            background: var(--card-bg); border: 1px solid rgba(255, 255, 255, 0.05);
+            padding: 15px; border-radius: 12px; margin-bottom: 15px;
         }
 
-        .script-card:hover { border-color: var(--accent); }
-
-        .script-card h3 { margin: 0; font-family: 'Orbitron', sans-serif; color: #fff; }
-        .script-card p { color: var(--text-dim); font-size: 0.9rem; margin: 10px 0; }
-
+        .card-header { display: flex; justify-content: space-between; align-items: flex-start; }
+        .script-title { font-family: 'Orbitron', sans-serif; font-size: 1.1rem; margin: 0; color: #fff; }
+        
         .copy-btn {
-            background: transparent;
-            border: 1px solid var(--accent);
-            color: var(--accent);
-            width: auto;
-            padding: 8px 20px;
-            font-size: 0.8rem;
+            background: rgba(255,255,255,0.05); border: 1px solid var(--accent);
+            color: var(--text-main); padding: 5px 10px; border-radius: 6px;
+            cursor: pointer; font-size: 14px; display: flex; align-items: center; gap: 5px;
         }
 
-        .copy-btn:hover { background: var(--accent); color: #fff; }
+        .script-desc { color: var(--text-dim); font-size: 0.85rem; margin: 8px 0; }
 
-        .error-msg { color: #ff4d4d; text-align: center; font-size: 0.9rem; }
+        /* The "See More" Code Block */
+        .code-wrapper {
+            margin-top: 10px; display: none; /* Hidden by default */
+            background: #000; border-radius: 6px; padding: 10px;
+            border: 1px solid #331452; overflow-x: auto;
+        }
+
+        pre { margin: 0; font-family: monospace; font-size: 12px; color: #bc13fe; white-space: pre-wrap; word-break: break-all; }
+
+        .toggle-btn {
+            background: transparent; border: none; color: var(--accent);
+            cursor: pointer; font-size: 13px; padding: 5px 0;
+            text-decoration: underline; font-weight: 600;
+        }
     </style>
 </head>
 <body>
 
-    <div class="header">
-        <h1 class="logo">SCRIPT REALM</h1>
-    </div>
+    <div class="header"><h1 class="logo">SCRIPT REALM</h1></div>
 
     <div class="container">
-        <!-- Publisher Panel -->
         <div class="glass-panel">
-            <h2>PUBLISH TO REALM</h2>
-            <input type="text" id="scriptName" placeholder="Script Name (e.g. Speed Hub)">
-            <textarea id="scriptDesc" placeholder="Briefly describe what this script does..."></textarea>
-            <textarea id="scriptCode" placeholder="Paste your Lua script here..." style="height: 150px; font-family: monospace;"></textarea>
-            <button onclick="uploadScript()">Publish Now</button>
+            <input type="text" id="scriptName" placeholder="Title">
+            <textarea id="scriptDesc" placeholder="Description"></textarea>
+            <textarea id="scriptCode" placeholder="Paste Lua Code" style="height: 100px; font-family: monospace;"></textarea>
+            <button class="primary-btn" onclick="uploadScript()">Publish</button>
         </div>
 
-        <!-- Community Feed -->
-        <h2>COMMUNITY FEED</h2>
-        <input type="text" id="searchBar" placeholder="Search scripts..." onkeyup="filterScripts()">
-        
-        <div id="feed">Loading the Realm...</div>
+        <div id="feed">Loading scripts...</div>
     </div>
 
     <script>
@@ -155,73 +93,60 @@
         const supabaseKey = 'sb_publishable_dwlWhrgvEF6ngaJ5I0OXZA_hQ0F_Gij'; 
         const _supabase = supabase.createClient(supabaseUrl, supabaseKey);
 
-        let allScripts = [];
-
         async function uploadScript() {
-            const name = document.getElementById('scriptName').value.trim();
-            const description = document.getElementById('scriptDesc').value.trim();
-            const code = document.getElementById('scriptCode').value.trim();
-
-            if(!name || !code) return alert("Please enter a name and the script code!");
+            const name = document.getElementById('scriptName').value;
+            const description = document.getElementById('scriptDesc').value;
+            const code = document.getElementById('scriptCode').value;
+            if(!name || !code) return alert("Title and Code required!");
 
             const { error } = await _supabase.from('scripts').insert([{ name, description, code }]);
-            
-            if (error) {
-                alert("Error: " + error.message);
-            } else {
-                alert("Successfully published!");
-                document.getElementById('scriptName').value = '';
-                document.getElementById('scriptDesc').value = '';
-                document.getElementById('scriptCode').value = '';
-                loadScripts();
-            }
+            if (error) alert(error.message);
+            else { location.reload(); }
         }
 
         async function loadScripts() {
             const { data, error } = await _supabase.from('scripts').select('*').order('created_at', { ascending: false });
-            
-            if (error) {
-                document.getElementById('feed').innerHTML = `<p class="error-msg">Failed to load: ${error.message}<br>Check your Supabase Policies!</p>`;
-                return;
-            }
+            if (error) { document.getElementById('feed').innerText = "Error loading."; return; }
 
-            allScripts = data;
-            renderScripts(data);
-        }
-
-        function renderScripts(scripts) {
             const feed = document.getElementById('feed');
             feed.innerHTML = '';
 
-            if (scripts.length === 0) {
-                feed.innerHTML = '<p style="text-align:center; color:#666;">No scripts found.</p>';
-                return;
-            }
-
-            scripts.forEach(item => {
+            data.forEach(item => {
                 const card = document.createElement('div');
                 card.className = 'script-card';
                 card.innerHTML = `
-                    <h3>${item.name}</h3>
-                    <p>${item.description || 'No description provided.'}</p>
-                    <button class="copy-btn" onclick="copyCode(\`${item.code.replace(/`/g, '\\`').replace(/\$/g, '\\$')}\`)">Copy Lua</button>
+                    <div class="card-header">
+                        <h3 class="script-title">${item.name}</h3>
+                        <button class="copy-btn" onclick="copyCode(this, \`${item.code.replace(/`/g, '\\`').replace(/\$/g, '\\$')}\`)">
+                            📄 Copy
+                        </button>
+                    </div>
+                    <p class="script-desc">${item.description || 'No description.'}</p>
+                    <button class="toggle-btn" onclick="toggleCode(this)">See more...</button>
+                    <div class="code-wrapper">
+                        <pre><code>${item.code}</code></pre>
+                    </div>
                 `;
                 feed.appendChild(card);
             });
         }
 
-        function filterScripts() {
-            const query = document.getElementById('searchBar').value.toLowerCase();
-            const filtered = allScripts.filter(s => 
-                s.name.toLowerCase().includes(query) || 
-                (s.description && s.description.toLowerCase().includes(query))
-            );
-            renderScripts(filtered);
+        function toggleCode(btn) {
+            const wrapper = btn.nextElementSibling;
+            if (wrapper.style.display === "block") {
+                wrapper.style.display = "none";
+                btn.innerText = "See more...";
+            } else {
+                wrapper.style.display = "block";
+                btn.innerText = "Hide script";
+            }
         }
 
-        function copyCode(code) {
+        function copyCode(btn, code) {
             navigator.clipboard.writeText(code).then(() => {
-                alert("Script copied!");
+                const originalText = btn.innerHTML;
+                btn.innerHTML = "✅ Copied!";
+                setTimeout(() => { btn.innerHTML = originalText; }, 2000);
             });
         }
 
