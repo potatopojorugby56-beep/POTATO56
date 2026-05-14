@@ -833,75 +833,163 @@ function renderScripts(data){
             },2000);
         };
 
-        /* LIKE */
+/* =========================
+   LIKE SYSTEM (NO DUPLICATES)
+========================= */
 
-        const likeBtn =
-        card.querySelector('.like-btn');
+const likeBtn =
+card.querySelector('.like-btn');
 
-        likeBtn.onclick =
-        async () => {
+/* Get liked scripts from browser */
 
-            item.likes =
-            (item.likes || 0) + 1;
+const likedScripts =
+JSON.parse(
+localStorage.getItem('likedScripts') || '[]'
+);
 
-            likeBtn.innerText =
-            `❤️ ${item.likes}`;
+/* Already liked */
+
+if(likedScripts.includes(item.id)){
+
+    likeBtn.innerText =
+    `❤️ ${item.likes || 0}`;
+
+    likeBtn.disabled = true;
+
+    likeBtn.style.opacity = ".6";
+}
+
+/* Like button click */
+
+likeBtn.onclick = async () => {
+
+    /* Prevent duplicate likes */
+
+    if(likedScripts.includes(item.id)){
+
+        alert("Already liked.");
+        return;
+    }
+
+    /* Add like */
+
+    item.likes =
+    (item.likes || 0) + 1;
+
+    /* Update UI */
+
+    likeBtn.innerText =
+    `❤️ ${item.likes}`;
+
+    /* Save to localStorage */
+
+    likedScripts.push(item.id);
+
+    localStorage.setItem(
+        'likedScripts',
+        JSON.stringify(likedScripts)
+    );
+
+    /* Disable button */
+
+    likeBtn.disabled = true;
+
+    likeBtn.style.opacity = ".6";
+
+    /* Update Supabase */
+
+    await _supabase
+
+    .from('scripts')
+
+    .update({
+        likes:item.likes
+    })
+
+    .eq('id',item.id);
+};
+
+
+
+/* =========================
+   VIEW SYSTEM (NO DUPLICATES)
+========================= */
+
+const viewBtn =
+card.querySelector('.view-btn');
+
+const wrapper =
+card.querySelector('.code-wrapper');
+
+/* Get viewed scripts */
+
+const viewedScripts =
+JSON.parse(
+localStorage.getItem('viewedScripts') || '[]'
+);
+
+/* View button */
+
+viewBtn.onclick =
+async () => {
+
+    /* CLOSE */
+
+    if(
+        wrapper.style.maxHeight &&
+        wrapper.style.maxHeight !== "0px"
+    ){
+
+        wrapper.style.maxHeight =
+        "0px";
+
+        viewBtn.innerText =
+        "👁 View";
+
+    }
+
+    /* OPEN */
+
+    else{
+
+        wrapper.style.maxHeight =
+        wrapper.scrollHeight + "px";
+
+        viewBtn.innerText =
+        "❌ Hide";
+
+        /* Prevent duplicate views */
+
+        if(!viewedScripts.includes(item.id)){
+
+            /* Save viewed */
+
+            viewedScripts.push(item.id);
+
+            localStorage.setItem(
+                'viewedScripts',
+                JSON.stringify(viewedScripts)
+            );
+
+            /* Add view */
+
+            item.views =
+            (item.views || 0) + 1;
+
+            /* Update Supabase */
 
             await _supabase
 
             .from('scripts')
 
             .update({
-                likes:item.likes
+                views:item.views
             })
 
             .eq('id',item.id);
-        };
-
-        /* VIEW */
-
-        const viewBtn =
-        card.querySelector('.view-btn');
-
-        const wrapper =
-        card.querySelector('.code-wrapper');
-
-        viewBtn.onclick =
-        async () => {
-
-            if(
-            wrapper.style.maxHeight &&
-            wrapper.style.maxHeight !== "0px"
-            ){
-
-                wrapper.style.maxHeight =
-                "0px";
-
-                viewBtn.innerText =
-                "👁 View";
-
-            }else{
-
-                wrapper.style.maxHeight =
-                wrapper.scrollHeight + "px";
-
-                viewBtn.innerText =
-                "❌ Hide";
-
-                item.views =
-                (item.views || 0) + 1;
-
-                await _supabase
-
-                .from('scripts')
-
-                .update({
-                    views:item.views
-                })
-
-                .eq('id',item.id);
-            }
-        };
+        }
+    }
+};
 
         /* DOWNLOAD */
 
