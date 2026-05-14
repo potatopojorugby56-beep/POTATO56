@@ -1,23 +1,37 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
-<meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
 <title>Script Realm</title>
 
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-
+<!-- Fonts -->
 <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@500;700&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
 
+<!-- Highlight JS -->
+<link rel="stylesheet"
+href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/tokyo-night-dark.min.css">
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/lua.min.js"></script>
+
+<!-- Supabase -->
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
 <style>
+
 :root{
     --bg:#070311;
-    --bg2:#130726;
-    --card:#160b2f;
+    --bg2:#12061f;
+    --card:#150a2b;
     --accent:#bc13fe;
-    --accent2:#7f00ff;
+    --accent2:#8f3bff;
     --text:#f2f2f2;
-    --dim:#a0a0b8;
+    --dim:#9f9fb4;
 }
 
 *{
@@ -27,12 +41,61 @@
 }
 
 body{
-    font-family:'Inter',sans-serif;
     background:
-    radial-gradient(circle at top,#241046 0%,#12051f 35%,#070311 100%);
-    color:var(--text);
-    overflow-x:hidden;
+    radial-gradient(circle at top,
+    #241046 0%,
+    #130624 35%,
+    #070311 100%);
+
     min-height:100vh;
+    overflow-x:hidden;
+    font-family:'Inter',sans-serif;
+    color:var(--text);
+}
+
+/* PORTAL */
+
+.portal{
+    position:fixed;
+    width:800px;
+    height:800px;
+
+    background:
+    radial-gradient(circle,
+    rgba(188,19,254,.25),
+    transparent 70%);
+
+    top:-350px;
+    left:50%;
+
+    transform:translateX(-50%);
+
+    filter:blur(50px);
+
+    z-index:-3;
+
+    animation:pulse 8s infinite;
+}
+
+@keyframes pulse{
+
+    0%{
+        transform:
+        translateX(-50%)
+        scale(1);
+    }
+
+    50%{
+        transform:
+        translateX(-50%)
+        scale(1.2);
+    }
+
+    100%{
+        transform:
+        translateX(-50%)
+        scale(1);
+    }
 }
 
 /* PARTICLES */
@@ -41,25 +104,27 @@ body{
     position:fixed;
     inset:0;
     overflow:hidden;
-    z-index:-1;
+    z-index:-2;
 }
 
 .particle{
     position:absolute;
-    width:2px;
-    height:2px;
-    background:#c76fff;
+    background:#bc13fe;
     border-radius:50%;
-    opacity:.5;
+    opacity:.4;
     animation:float linear infinite;
 }
 
 @keyframes float{
+
     from{
-        transform:translateY(100vh);
+        transform:
+        translateY(100vh);
     }
+
     to{
-        transform:translateY(-100px);
+        transform:
+        translateY(-100px);
     }
 }
 
@@ -67,30 +132,51 @@ body{
 
 .header{
     text-align:center;
-    padding:50px 20px 20px;
+    padding:60px 20px 30px;
 }
 
 .logo{
     font-family:'Orbitron',sans-serif;
-    font-size:3rem;
-    letter-spacing:6px;
-    color:white;
+    font-size:3.5rem;
+    letter-spacing:8px;
+
     text-shadow:
-    0 0 10px #bc13fe,
-    0 0 25px #bc13fe,
-    0 0 50px rgba(188,19,254,.7);
+    0 0 15px #bc13fe,
+    0 0 40px rgba(188,19,254,.6);
+
+    animation:glow 4s infinite;
+}
+
+@keyframes glow{
+
+    0%{
+        text-shadow:
+        0 0 15px #bc13fe,
+        0 0 40px rgba(188,19,254,.6);
+    }
+
+    50%{
+        text-shadow:
+        0 0 25px #bc13fe,
+        0 0 70px rgba(188,19,254,.9);
+    }
+
+    100%{
+        text-shadow:
+        0 0 15px #bc13fe,
+        0 0 40px rgba(188,19,254,.6);
+    }
 }
 
 .subtitle{
+    margin-top:12px;
     color:var(--dim);
-    margin-top:10px;
-    font-size:.95rem;
 }
 
 /* CONTAINER */
 
 .container{
-    max-width:900px;
+    max-width:1000px;
     margin:auto;
     padding:20px;
 }
@@ -98,76 +184,100 @@ body{
 /* GLASS */
 
 .glass{
-    background:rgba(22,11,47,.7);
+    background:rgba(21,10,43,.65);
+
     backdrop-filter:blur(14px);
-    border:1px solid rgba(255,255,255,.08);
-    border-radius:20px;
+
+    border:1px solid rgba(255,255,255,.06);
+
+    border-radius:24px;
+
     box-shadow:
-    0 0 25px rgba(188,19,254,.08),
-    inset 0 0 20px rgba(255,255,255,.02);
+    0 0 25px rgba(188,19,254,.08);
 }
 
-/* FORM */
+/* UPLOAD */
 
 .upload-panel{
     padding:25px;
-    margin-bottom:30px;
+    margin-bottom:25px;
 }
 
 input,
 textarea{
     width:100%;
-    background:rgba(0,0,0,.25);
+    background:rgba(0,0,0,.2);
+
     border:1px solid rgba(255,255,255,.08);
-    padding:14px;
+
     color:white;
-    border-radius:12px;
-    margin-bottom:12px;
-    resize:none;
-    transition:.25s;
+
+    padding:14px;
+
+    border-radius:14px;
+
+    margin-bottom:14px;
+
     font-family:inherit;
+
+    transition:.25s;
 }
 
 textarea{
-    min-height:120px;
+    min-height:130px;
+    resize:vertical;
 }
 
 input:focus,
 textarea:focus{
     outline:none;
+
     border-color:var(--accent);
-    box-shadow:0 0 15px rgba(188,19,254,.2);
+
+    box-shadow:
+    0 0 15px rgba(188,19,254,.2);
 }
 
 /* BUTTON */
 
 .primary-btn{
     width:100%;
-    padding:14px;
+    padding:15px;
+
     border:none;
+
     border-radius:14px;
-    background:linear-gradient(90deg,var(--accent2),var(--accent));
+
+    background:
+    linear-gradient(90deg,
+    var(--accent2),
+    var(--accent));
+
     color:white;
+
     font-family:'Orbitron',sans-serif;
+
     font-weight:bold;
+
     cursor:pointer;
+
     transition:.3s;
-    letter-spacing:1px;
 }
 
 .primary-btn:hover{
     transform:translateY(-2px);
-    box-shadow:0 0 20px rgba(188,19,254,.5);
+
+    box-shadow:
+    0 0 20px rgba(188,19,254,.5);
 }
 
-/* SEARCH */
+/* TOPBAR */
 
 .topbar{
     display:flex;
-    justify-content:space-between;
+    gap:15px;
     align-items:center;
     margin-bottom:20px;
-    gap:10px;
 }
 
 .search{
@@ -176,29 +286,36 @@ textarea:focus{
 
 .stats{
     color:var(--dim);
-    font-size:.9rem;
 }
 
 /* CARD */
 
 .script-card{
-    padding:20px;
+    padding:22px;
     margin-bottom:18px;
+
     transition:.3s;
+
     animation:fade .4s ease;
 }
 
 .script-card:hover{
-    transform:translateY(-3px);
-    border-color:rgba(188,19,254,.4);
-    box-shadow:0 0 30px rgba(188,19,254,.15);
+    transform:translateY(-4px);
+
+    border-color:
+    rgba(188,19,254,.25);
+
+    box-shadow:
+    0 0 35px rgba(188,19,254,.14);
 }
 
 @keyframes fade{
+
     from{
         opacity:0;
         transform:translateY(10px);
     }
+
     to{
         opacity:1;
         transform:translateY(0);
@@ -209,144 +326,217 @@ textarea:focus{
     display:flex;
     justify-content:space-between;
     align-items:center;
-    gap:10px;
+    gap:15px;
 }
 
 .script-title{
     font-family:'Orbitron',sans-serif;
-    font-size:1.1rem;
+    font-size:1.15rem;
 }
 
 .script-desc{
+    margin-top:12px;
     color:var(--dim);
-    margin-top:10px;
-    font-size:.92rem;
+    line-height:1.5;
+}
+
+/* TAGS */
+
+.tags{
+    display:flex;
+    flex-wrap:wrap;
+    gap:8px;
+    margin-top:15px;
+}
+
+.tag{
+    background:
+    rgba(188,19,254,.12);
+
+    border:
+    1px solid rgba(188,19,254,.25);
+
+    padding:6px 12px;
+
+    border-radius:999px;
+
+    font-size:.75rem;
 }
 
 /* ACTIONS */
 
 .actions{
     display:flex;
+    flex-wrap:wrap;
     gap:10px;
-    margin-top:15px;
+    margin-top:18px;
 }
 
 .action-btn{
-    background:rgba(255,255,255,.05);
-    border:1px solid rgba(188,19,254,.35);
+    background:
+    rgba(255,255,255,.05);
+
+    border:
+    1px solid rgba(188,19,254,.25);
+
     color:white;
-    padding:8px 14px;
-    border-radius:10px;
+
+    padding:10px 15px;
+
+    border-radius:12px;
+
     cursor:pointer;
+
     transition:.25s;
 }
 
 .action-btn:hover{
-    background:rgba(188,19,254,.15);
+    background:
+    rgba(188,19,254,.12);
 }
 
 /* CODE */
 
 .code-wrapper{
-    margin-top:15px;
-    background:#05010d;
-    border:1px solid #30114d;
-    border-radius:14px;
-    display:none;
+
+    margin-top:18px;
+
     overflow:hidden;
+
+    max-height:0;
+
+    transition:.4s ease;
+
+    border-radius:16px;
+
+    border:
+    1px solid rgba(188,19,254,.15);
 }
 
-.code-top{
-    padding:10px 14px;
-    border-bottom:1px solid rgba(255,255,255,.05);
-    color:#d28dff;
-    font-size:.85rem;
+.editor-top{
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+
+    padding:12px 16px;
+
+    background:#10051c;
+
+    border-bottom:
+    1px solid rgba(255,255,255,.05);
 }
 
-.code-wrapper pre{
-    padding:16px;
+pre{
+    margin:0 !important;
+    padding:18px !important;
+
+    max-height:500px;
+
     overflow:auto;
-    color:#d786ff;
-    font-size:.83rem;
-    line-height:1.5;
 }
 
 /* MOBILE */
 
 @media(max-width:700px){
 
-.logo{
-    font-size:2rem;
+    .logo{
+        font-size:2.2rem;
+    }
+
+    .topbar{
+        flex-direction:column;
+    }
+
+    .card-header{
+        flex-direction:column;
+        align-items:flex-start;
+    }
+
+    .actions{
+        width:100%;
+    }
+
+    .action-btn{
+        flex:1;
+    }
 }
 
-.topbar{
-    flex-direction:column;
-    align-items:stretch;
-}
-
-.card-header{
-    flex-direction:column;
-    align-items:flex-start;
-}
-
-.actions{
-    width:100%;
-}
-
-.action-btn{
-    flex:1;
-}
-
-}
 </style>
+
 </head>
 
 <body>
 
+<div class="portal"></div>
+
 <div class="particles" id="particles"></div>
 
 <div class="header">
-    <h1 class="logo">SCRIPT REALM</h1>
+
+    <h1 class="logo">
+        SCRIPT REALM
+    </h1>
+
     <p class="subtitle">
-        Upload • Share • Copy • Explore
+        Upload • Share • Explore • Copy
     </p>
+
 </div>
 
 <div class="container">
 
+    <!-- Upload -->
+
     <div class="glass upload-panel">
 
-        <input type="text" id="scriptName" placeholder="Script Title">
+        <input
+        type="text"
+        id="scriptName"
+        placeholder="Script Title">
 
-        <textarea id="scriptDesc" placeholder="Description"></textarea>
+        <textarea
+        id="scriptDesc"
+        placeholder="Description"></textarea>
+
+        <input
+        type="text"
+        id="scriptTags"
+        placeholder="Tags: GUI, ESP, PvP">
 
         <textarea
         id="scriptCode"
-        placeholder="Paste your Lua script here..."
-        style="font-family:monospace;"
-        ></textarea>
+        placeholder="Paste Lua Script Here..."
+        style="font-family:monospace;"></textarea>
 
-        <button class="primary-btn" onclick="uploadScript()">
-            PUBLISH SCRIPT
+        <button
+        class="primary-btn"
+        onclick="uploadScript()">
+
+        PUBLISH SCRIPT
+
         </button>
 
     </div>
 
+    <!-- Search -->
+
     <div class="topbar">
 
         <input
-        class="search"
-        id="searchInput"
         type="text"
+        id="searchInput"
+        class="search"
         placeholder="Search scripts..."
-        oninput="filterScripts()"
-        >
+        oninput="filterScripts()">
 
         <div class="stats">
-            <span id="scriptCount">0</span> Scripts
+            <span id="scriptCount">0</span>
+            Scripts
         </div>
 
     </div>
+
+    <!-- Feed -->
 
     <div id="feed"></div>
 
@@ -354,70 +544,123 @@ textarea:focus{
 
 <script>
 
+/* SUPABASE */
+
 const supabaseUrl =
-'https://pgzrmmrkgxefocxdcxli.supabase.co';
+'https://YOURPROJECT.supabase.co';
 
 const supabaseKey =
-'sb_publishable_dwlWhrgvEF6ngaJ5I0OXZA_hQ0F_Gij';
+'YOUR_SUPABASE_ANON_KEY';
 
 const _supabase =
-supabase.createClient(supabaseUrl, supabaseKey);
+supabase.createClient(
+supabaseUrl,
+supabaseKey
+);
 
 let allScripts = [];
 
 /* PARTICLES */
 
-const particles = document.getElementById("particles");
+const particles =
+document.getElementById("particles");
 
-for(let i=0;i<80;i++){
+for(let i=0;i<90;i++){
 
-    const p = document.createElement("div");
+    const p =
+    document.createElement("div");
+
     p.className = "particle";
 
-    p.style.left = Math.random()*100+"%";
-    p.style.animationDuration =
-    (10 + Math.random()*20)+"s";
-
-    p.style.opacity = Math.random();
+    p.style.left =
+    Math.random()*100 + "%";
 
     p.style.width =
     p.style.height =
-    (1 + Math.random()*3)+"px";
+    (1 + Math.random()*3) + "px";
+
+    p.style.animationDuration =
+    (10 + Math.random()*20) + "s";
 
     particles.appendChild(p);
+}
+
+/* ESCAPE */
+
+function escapeHtml(text){
+
+    return text
+
+    .replace(/&/g,"&amp;")
+    .replace(/</g,"&lt;")
+    .replace(/>/g,"&gt;");
 }
 
 /* UPLOAD */
 
 async function uploadScript(){
 
+    const btn =
+    document.querySelector('.primary-btn');
+
+    btn.innerText =
+    "Publishing...";
+
     const name =
-    document.getElementById('scriptName').value;
+    document.getElementById('scriptName')
+    .value;
 
     const description =
-    document.getElementById('scriptDesc').value;
+    document.getElementById('scriptDesc')
+    .value;
 
     const code =
-    document.getElementById('scriptCode').value;
+    document.getElementById('scriptCode')
+    .value;
+
+    const tags =
+    document.getElementById('scriptTags')
+    .value
+    .split(',')
+    .map(t => t.trim());
 
     if(!name || !code){
 
         alert("Title and code required.");
+
+        btn.innerText =
+        "PUBLISH SCRIPT";
+
         return;
     }
 
     const { error } =
     await _supabase
     .from('scripts')
-    .insert([{ name, description, code }]);
+    .insert([{
+
+        name,
+        description,
+        code,
+        tags,
+        likes:0,
+        views:0
+
+    }]);
 
     if(error){
 
         alert(error.message);
 
+        btn.innerText =
+        "PUBLISH SCRIPT";
+
     }else{
 
-        location.reload();
+        btn.innerText =
+        "Published!";
+
+        loadScripts();
     }
 }
 
@@ -426,15 +669,23 @@ async function uploadScript(){
 async function loadScripts(){
 
     const { data, error } =
+
     await _supabase
+
     .from('scripts')
+
     .select('*')
-    .order('created_at',{ ascending:false });
+
+    .order(
+    'created_at',
+    { ascending:false }
+    );
 
     if(error){
 
         document.getElementById('feed')
-        .innerHTML = "Failed loading scripts.";
+        .innerHTML =
+        "Failed loading scripts.";
 
         return;
     }
@@ -451,10 +702,10 @@ function renderScripts(data){
     const feed =
     document.getElementById('feed');
 
+    feed.innerHTML = '';
+
     document.getElementById('scriptCount')
     .innerText = data.length;
-
-    feed.innerHTML = '';
 
     data.forEach(item => {
 
@@ -472,11 +723,21 @@ function renderScripts(data){
                 ${item.name}
             </h3>
 
+            <div class="stats">
+
+                👁 ${item.views || 0}
+
+            </div>
+
         </div>
 
         <p class="script-desc">
+
             ${item.description || 'No description.'}
+
         </p>
+
+        <div class="tags"></div>
 
         <div class="actions">
 
@@ -484,16 +745,33 @@ function renderScripts(data){
                 📄 Copy
             </button>
 
-            <button class="action-btn toggle-btn">
+            <button class="action-btn like-btn">
+                ❤️ ${item.likes || 0}
+            </button>
+
+            <button class="action-btn view-btn">
                 👁 View
+            </button>
+
+            <button class="action-btn download-btn">
+                ⬇ Download
             </button>
 
         </div>
 
         <div class="code-wrapper">
 
-            <div class="code-top">
-                Lua Script
+            <div class="editor-top">
+
+                <span>script.lua</span>
+
+                <button
+                class="action-btn fullscreen-btn">
+
+                ⛶
+
+                </button>
+
             </div>
 
             <pre></pre>
@@ -501,47 +779,170 @@ function renderScripts(data){
         </div>
         `;
 
+        /* TAGS */
+
+        const tagsDiv =
+        card.querySelector('.tags');
+
+        (item.tags || [])
+        .forEach(tag => {
+
+            const el =
+            document.createElement('span');
+
+            el.className =
+            'tag';
+
+            el.innerText =
+            tag;
+
+            tagsDiv.appendChild(el);
+        });
+
+        /* CODE */
+
         const pre =
         card.querySelector('pre');
 
-        pre.textContent = item.code;
+        pre.innerHTML =
+
+        `<code class="language-lua">
+
+        ${escapeHtml(item.code)}
+
+        </code>`;
+
+        /* COPY */
 
         const copyBtn =
         card.querySelector('.copy-btn');
 
         copyBtn.onclick = () => {
 
-            navigator.clipboard.writeText(item.code);
+            navigator.clipboard
+            .writeText(item.code);
 
-            copyBtn.innerText = "✅ Copied";
+            copyBtn.innerText =
+            "✅ Copied";
 
             setTimeout(()=>{
-                copyBtn.innerText = "📄 Copy";
+
+                copyBtn.innerText =
+                "📄 Copy";
+
             },2000);
         };
 
-        const toggleBtn =
-        card.querySelector('.toggle-btn');
+        /* LIKE */
+
+        const likeBtn =
+        card.querySelector('.like-btn');
+
+        likeBtn.onclick =
+        async () => {
+
+            item.likes =
+            (item.likes || 0) + 1;
+
+            likeBtn.innerText =
+            `❤️ ${item.likes}`;
+
+            await _supabase
+
+            .from('scripts')
+
+            .update({
+                likes:item.likes
+            })
+
+            .eq('id',item.id);
+        };
+
+        /* VIEW */
+
+        const viewBtn =
+        card.querySelector('.view-btn');
 
         const wrapper =
         card.querySelector('.code-wrapper');
 
-        toggleBtn.onclick = () => {
+        viewBtn.onclick =
+        async () => {
 
-            if(wrapper.style.display === "block"){
+            if(
+            wrapper.style.maxHeight &&
+            wrapper.style.maxHeight !== "0px"
+            ){
 
-                wrapper.style.display = "none";
-                toggleBtn.innerText = "👁 View";
+                wrapper.style.maxHeight =
+                "0px";
+
+                viewBtn.innerText =
+                "👁 View";
 
             }else{
 
-                wrapper.style.display = "block";
-                toggleBtn.innerText = "❌ Hide";
+                wrapper.style.maxHeight =
+                wrapper.scrollHeight + "px";
+
+                viewBtn.innerText =
+                "❌ Hide";
+
+                item.views =
+                (item.views || 0) + 1;
+
+                await _supabase
+
+                .from('scripts')
+
+                .update({
+                    views:item.views
+                })
+
+                .eq('id',item.id);
             }
+        };
+
+        /* DOWNLOAD */
+
+        const downloadBtn =
+        card.querySelector('.download-btn');
+
+        downloadBtn.onclick = () => {
+
+            const blob =
+            new Blob(
+            [item.code],
+            {
+                type:'text/plain'
+            });
+
+            const a =
+            document.createElement('a');
+
+            a.href =
+            URL.createObjectURL(blob);
+
+            a.download =
+            item.name + ".lua";
+
+            a.click();
+        };
+
+        /* FULLSCREEN */
+
+        const fullBtn =
+        card.querySelector('.fullscreen-btn');
+
+        fullBtn.onclick = () => {
+
+            wrapper.requestFullscreen();
         };
 
         feed.appendChild(card);
     });
+
+    hljs.highlightAll();
 }
 
 /* SEARCH */
@@ -549,14 +950,23 @@ function renderScripts(data){
 function filterScripts(){
 
     const query =
-    document.getElementById('searchInput')
+
+    document
+    .getElementById('searchInput')
+
     .value
+
     .toLowerCase();
 
     const filtered =
+
     allScripts.filter(script =>
 
-        script.name.toLowerCase().includes(query) ||
+        script.name
+        .toLowerCase()
+        .includes(query)
+
+        ||
 
         (script.description || '')
         .toLowerCase()
@@ -565,6 +975,31 @@ function filterScripts(){
 
     renderScripts(filtered);
 }
+
+/* REALTIME */
+
+_supabase
+
+.channel('scripts-feed')
+
+.on(
+'supabase_changes',
+
+{
+event:'*',
+schema:'public',
+table:'scripts'
+},
+
+payload => {
+
+    loadScripts();
+}
+)
+
+.subscribe();
+
+/* START */
 
 loadScripts();
 
