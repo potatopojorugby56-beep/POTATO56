@@ -3,391 +3,153 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Script Realm</title>
-    <!-- Using a pixel/retro font to match the gaming aesthetic -->
+    <title>Script Realm | Community</title>
+    <!-- Supabase Library -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <link href="https://fonts.googleapis.com/css2?family=VT323&family=Inter:wght@400;600&display=swap" rel="stylesheet">
     <style>
-        /* CSS Styling - Dark Purple Theme */
-        :root {
-            --bg-dark: #07030e;
-            --panel-bg: #110722;
-            --accent-purple: #9d00ff;
-            --accent-light: #d68aff;
-            --text-main: #e0e0e0;
-            --text-dim: #8b8b8b;
-        }
-
-        body {
-            background-color: var(--bg-dark);
-            background-image: radial-gradient(circle at center, #1a0a33 0%, var(--bg-dark) 100%);
-            color: var(--text-main);
-            font-family: 'Inter', sans-serif;
-            margin: 0;
-            padding: 0;
-            min-height: 100vh;
-        }
-
-        h1, h2, h3, .pixel-font {
-            font-family: 'VT323', monospace;
-            text-transform: uppercase;
-            letter-spacing: 2px;
-        }
-
-        header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 20px 50px;
-            border-bottom: 1px solid rgba(157, 0, 255, 0.3);
-        }
-
-        .logo {
-            font-size: 28px;
-            color: var(--accent-light);
-            text-shadow: 0 0 10px var(--accent-purple);
-            margin: 0;
-        }
-
-        .nav-links a {
-            color: var(--text-main);
-            text-decoration: none;
-            margin-left: 20px;
-            font-size: 18px;
-            transition: color 0.3s;
-        }
-
-        .nav-links a:hover {
-            color: var(--accent-light);
-        }
-
-        main {
-            max-width: 900px;
-            margin: 40px auto;
-            padding: 0 20px;
-        }
-
-        /* Upload Section */
-        .upload-section {
-            background: var(--panel-bg);
-            border: 1px solid var(--accent-purple);
-            padding: 30px;
-            border-radius: 8px;
-            box-shadow: 0 0 15px rgba(157, 0, 255, 0.1);
-            margin-bottom: 40px;
-        }
-
-        .upload-section h2 {
-            font-size: 32px;
-            color: var(--accent-light);
-            margin-top: 0;
-        }
-
-        .form-group {
-            margin-bottom: 20px;
-        }
-
-        label {
-            display: block;
-            margin-bottom: 8px;
-            font-family: 'VT323', monospace;
-            font-size: 20px;
-            color: var(--accent-light);
-        }
-
-        input[type="text"], textarea {
-            width: 100%;
-            padding: 12px;
-            background: rgba(0, 0, 0, 0.5);
-            border: 1px solid #3d1b63;
-            color: white;
-            border-radius: 4px;
-            font-family: 'Inter', sans-serif;
-            box-sizing: border-box;
-        }
-
-        input[type="text"]:focus, textarea:focus {
-            outline: none;
-            border-color: var(--accent-purple);
-            box-shadow: 0 0 8px rgba(157, 0, 255, 0.5);
-        }
-
-        textarea {
-            resize: vertical;
-            min-height: 100px;
-        }
-
-        button {
-            background: transparent;
-            color: var(--accent-light);
-            border: 1px solid var(--accent-purple);
-            padding: 10px 20px;
-            font-family: 'VT323', monospace;
-            font-size: 20px;
-            cursor: pointer;
-            transition: all 0.3s;
-            border-radius: 4px;
-            text-transform: uppercase;
-        }
-
-        button:hover {
-            background: var(--accent-purple);
-            color: white;
-            box-shadow: 0 0 15px var(--accent-purple);
-        }
-
-        /* Script Feed */
-        #script-feed {
-            display: flex;
-            flex-direction: column;
-            gap: 20px;
-        }
-
-        .script-card {
-            background: var(--panel-bg);
-            border: 1px solid #3d1b63;
-            padding: 20px;
-            border-radius: 8px;
-            position: relative;
-        }
-
-        .script-card::before {
-            content: '';
-            position: absolute;
-            top: 0; left: 0; right: 0; bottom: 0;
-            box-shadow: inset 0 0 20px rgba(157, 0, 255, 0.05);
-            pointer-events: none;
-        }
-
-        .script-title {
-            font-size: 24px;
-            color: var(--accent-light);
-            margin: 0 0 10px 0;
-        }
-
-        .script-desc {
-            color: var(--text-main);
-            line-height: 1.5;
-            margin-bottom: 20px;
-        }
-
-        .actions {
-            display: flex;
-            gap: 15px;
-            border-top: 1px solid #3d1b63;
-            padding-top: 15px;
-            margin-bottom: 15px;
-        }
-
-        .action-btn {
-            background: none;
-            border: none;
-            color: var(--text-dim);
-            font-size: 16px;
-            cursor: pointer;
-            display: flex;
-            align-items: center;
-            gap: 5px;
-            padding: 0;
-        }
-
-        .action-btn:hover {
-            color: var(--accent-light);
-            text-shadow: 0 0 5px var(--accent-purple);
-        }
-
-        /* Comments Section */
-        .comments-section {
-            background: rgba(0, 0, 0, 0.3);
-            padding: 15px;
-            border-radius: 4px;
-        }
-
-        .comment-list {
-            margin-bottom: 15px;
-        }
-
-        .comment-item {
-            background: rgba(255, 255, 255, 0.05);
-            padding: 10px;
-            border-radius: 4px;
-            margin-bottom: 8px;
-            font-size: 14px;
-        }
-
-        .comment-form {
-            display: flex;
-            gap: 10px;
-        }
-
-        .comment-input {
-            flex-grow: 1;
-            padding: 8px;
-        }
-
+        :root { --bg: #07030e; --panel: #110722; --purple: #9d00ff; --light: #d68aff; }
+        body { background: var(--bg); color: #e0e0e0; font-family: 'Inter', sans-serif; margin: 0; padding: 0; }
+        .pixel { font-family: 'VT323', monospace; text-transform: uppercase; letter-spacing: 1px; }
+        header { padding: 20px; border-bottom: 1px solid var(--purple); display: flex; justify-content: space-between; align-items: center; background: rgba(0,0,0,0.8); }
+        .hidden { display: none !important; }
+        .container { max-width: 600px; margin: 40px auto; padding: 20px; }
+        input, textarea { width: 100%; padding: 12px; background: #000; border: 1px solid #3d1b63; color: #fff; border-radius: 4px; margin-bottom: 10px; box-sizing: border-box; }
+        button { background: transparent; color: var(--light); border: 1px solid var(--purple); padding: 10px 20px; cursor: pointer; border-radius: 4px; font-family: 'VT323', monospace; font-size: 18px; text-transform: uppercase; }
+        button:hover { background: var(--purple); color: #fff; box-shadow: 0 0 10px var(--purple); }
+        .script-card { background: var(--panel); border: 1px solid #3d1b63; padding: 20px; border-radius: 8px; margin-bottom: 20px; position: relative; }
+        .script-title { color: var(--light); margin: 0; font-size: 24px; }
+        .script-desc { font-size: 14px; color: #8b8b8b; margin: 10px 0; }
     </style>
 </head>
 <body>
 
     <header>
-        <h1 class="logo">SCRIPT REALM</h1>
-        <nav class="nav-links pixel-font">
-            <a href="#">Home</a>
-            <a href="#">Explore</a>
-            <a href="#">Community</a>
-        </nav>
+        <h1 class="pixel" style="color:var(--light); margin:0;">SCRIPT REALM</h1>
+        <button id="logoutBtn" class="hidden" onclick="logout()">Logout</button>
     </header>
 
-    <main>
-        <!-- Form to Upload New Scripts -->
-        <section class="upload-section">
-            <h2>Upload a Script</h2>
-            <form id="uploadForm">
-                <div class="form-group">
-                    <label for="scriptName">Script Name // Title</label>
-                    <input type="text" id="scriptName" placeholder="e.g., Infinite Yield Custom UI" required>
-                </div>
-                <div class="form-group">
-                    <label for="scriptDesc">Description</label>
-                    <textarea id="scriptDesc" placeholder="What does this script do? What executors is it optimized for?" required></textarea>
-                </div>
-                <!-- Simulating a file upload -->
-                <div class="form-group">
-                    <label for="scriptFile">Attach File (.txt, .lua)</label>
-                    <input type="file" id="scriptFile" style="color: var(--text-main);">
-                </div>
-                <button type="submit">UPLOAD TO REALM</button>
-            </form>
+    <!-- Auth Section -->
+    <div id="authUI" class="container">
+        <h2 class="pixel">Access the Realm</h2>
+        <input type="email" id="email" placeholder="Email Address">
+        <input type="password" id="password" placeholder="Password">
+        <div style="display:flex; gap:10px;">
+            <button onclick="login()">Login</button>
+            <button onclick="signUp()">Sign Up</button>
+        </div>
+        <p style="font-size: 12px; color: #8b8b8b; margin-top: 20px;">*Sign up requires email confirmation unless disabled in Supabase settings.</p>
+    </div>
+
+    <!-- Main Content Section -->
+    <div id="mainUI" class="container hidden">
+        <section style="background:var(--panel); padding:20px; border-radius:8px; border: 1px solid var(--purple); margin-bottom: 30px;">
+            <h2 class="pixel" style="margin-top:0;">Publish New Script</h2>
+            <input type="text" id="scriptName" placeholder="Title (e.g. Delta Auto-Farm)">
+            <textarea id="scriptDesc" placeholder="Description of what it does..."></textarea>
+            <textarea id="scriptCode" placeholder="Paste Lua Code Here..." style="height:120px; font-family:monospace;"></textarea>
+            <button onclick="uploadScript()">Publish Script</button>
         </section>
 
-        <!-- Where the scripts are displayed -->
-        <section id="script-feed">
-            
-            <!-- Pre-populated Example 1 -->
-            <div class="script-card">
-                <h3 class="script-title pixel-font">99 Nights - Auto Loot & TP</h3>
-                <p class="script-desc">Automatically teleports to chests named in the workspace and opens them. Includes anti-ban logic. Optimized and tested heavily on Delta executor for mobile.</p>
-                <div class="actions">
-                    <button class="action-btn like-btn" onclick="toggleLike(this)">
-                        ♥ <span class="like-count">24</span> Likes
-                    </button>
-                    <button class="action-btn pixel-font">
-                        [DOWNLOAD .LUA]
-                    </button>
-                </div>
-                <div class="comments-section">
-                    <div class="comment-list">
-                        <div class="comment-item"><strong>Guest_77:</strong> Works perfectly on the new update, thanks!</div>
-                    </div>
-                    <form class="comment-form" onsubmit="addComment(event, this)">
-                        <input type="text" class="comment-input" placeholder="Add a comment..." required>
-                        <button type="submit" style="font-size: 16px; padding: 5px 10px;">Post</button>
-                    </form>
-                </div>
-            </div>
+        <h2 class="pixel">Recent Community Scripts</h2>
+        <div id="feed"></div>
+    </div>
 
-            <!-- Pre-populated Example 2 -->
-            <div class="script-card">
-                <h3 class="script-title pixel-font">Universal Magic Bullet</h3>
-                <p class="script-desc">A general implementation for projectile manipulation. This is not tied to a specific weapon, allowing you to adapt it to various loadouts. Use responsibly.</p>
-                <div class="actions">
-                    <button class="action-btn like-btn" onclick="toggleLike(this)">
-                        ♥ <span class="like-count">8</span> Likes
-                    </button>
-                    <button class="action-btn pixel-font">
-                        [DOWNLOAD .LUA]
-                    </button>
-                </div>
-                <div class="comments-section">
-                    <div class="comment-list"></div>
-                    <form class="comment-form" onsubmit="addComment(event, this)">
-                        <input type="text" class="comment-input" placeholder="Add a comment..." required>
-                        <button type="submit" style="font-size: 16px; padding: 5px 10px;">Post</button>
-                    </form>
-                </div>
-            </div>
-
-        </section>
-    </main>
-
-    <!-- JavaScript for Interactivity -->
     <script>
-        // Handle form submission to create a new script post
-        document.getElementById('uploadForm').addEventListener('submit', function(e) {
-            e.preventDefault(); // Prevent page reload
+        // --- CONFIGURATION ---
+        // Replace with your info from Supabase Project Settings > API
+        const supabaseUrl = 'https://pgzrmmrkgxefocxdcxli.supabase.co';
+        const supabaseKey = 'sb_publishable_dwlWhrgvEF6ngaJ5I0OXZA_hQ0F_Gij'; 
+        const _supabase = supabase.createClient(supabaseUrl, supabaseKey);
 
-            // Get values from the form
-            const name = document.getElementById('scriptName').value;
-            const desc = document.getElementById('scriptDesc').value;
+        const authUI = document.getElementById('authUI');
+        const mainUI = document.getElementById('mainUI');
+        const logoutBtn = document.getElementById('logoutBtn');
 
-            // Create new HTML for the script card
-            const newCardHTML = `
-                <div class="script-card">
-                    <h3 class="script-title pixel-font">${name}</h3>
-                    <p class="script-desc">${desc}</p>
-                    <div class="actions">
-                        <button class="action-btn like-btn" onclick="toggleLike(this)">
-                            ♥ <span class="like-count">0</span> Likes
-                        </button>
-                        <button class="action-btn pixel-font">
-                            [DOWNLOAD .LUA]
-                        </button>
-                    </div>
-                    <div class="comments-section">
-                        <div class="comment-list"></div>
-                        <form class="comment-form" onsubmit="addComment(event, this)">
-                            <input type="text" class="comment-input" placeholder="Add a comment..." required>
-                            <button type="submit" style="font-size: 16px; padding: 5px 10px;">Post</button>
-                        </form>
-                    </div>
-                </div>
-            `;
+        // --- AUTH LOGIC ---
+        async function signUp() {
+            const email = document.getElementById('email').value;
+            const password = document.getElementById('password').value;
+            const { error } = await _supabase.auth.signUp({ email, password });
+            if (error) alert("Error: " + error.message);
+            else alert("Success! Check your email to confirm your account.");
+        }
 
-            // Insert the new card at the top of the feed
-            const feed = document.getElementById('script-feed');
-            feed.insertAdjacentHTML('afterbegin', newCardHTML);
+        async function login() {
+            const email = document.getElementById('email').value;
+            const password = document.getElementById('password').value;
+            const { error } = await _supabase.auth.signInWithPassword({ email, password });
+            if (error) alert("Login Failed: " + error.message);
+            else checkUser();
+        }
 
-            // Clear the form
-            this.reset();
-        });
+        async function logout() {
+            await _supabase.auth.signOut();
+            checkUser();
+        }
 
-        // Handle the Like button functionality
-        function toggleLike(button) {
-            const countSpan = button.querySelector('.like-count');
-            let count = parseInt(countSpan.innerText);
-            
-            // Simple logic: if it has a special class, we unlike it, otherwise we like it
-            if (button.classList.contains('liked')) {
-                countSpan.innerText = count - 1;
-                button.classList.remove('liked');
-                button.style.color = 'var(--text-dim)';
+        async function checkUser() {
+            const { data: { user } } = await _supabase.auth.getUser();
+            if (user) {
+                authUI.classList.add('hidden');
+                mainUI.classList.remove('hidden');
+                logoutBtn.classList.remove('hidden');
+                loadScripts();
             } else {
-                countSpan.innerText = count + 1;
-                button.classList.add('liked');
-                button.style.color = 'var(--accent-light)';
-                button.style.textShadow = '0 0 8px var(--accent-purple)';
+                authUI.classList.remove('hidden');
+                mainUI.classList.add('hidden');
+                logoutBtn.classList.add('hidden');
             }
         }
 
-        // Handle adding a comment to a specific post
-        function addComment(event, form) {
-            event.preventDefault(); // Prevent page reload
+        // --- DATABASE LOGIC ---
+        async function uploadScript() {
+            const name = document.getElementById('scriptName').value;
+            const description = document.getElementById('scriptDesc').value;
+            const code = document.getElementById('scriptCode').value;
+
+            if(!name || !code) return alert("Title and Script Code are required!");
+
+            const { error } = await _supabase.from('scripts').insert([{ name, description, code }]);
             
-            const input = form.querySelector('.comment-input');
-            const commentText = input.value;
-            
-            // Find the list container right above the form
-            const commentList = form.previousElementSibling;
-            
-            // Create and append the new comment
-            const newComment = document.createElement('div');
-            newComment.className = 'comment-item';
-            newComment.innerHTML = `<strong>You:</strong> ${commentText}`;
-            
-            commentList.appendChild(newComment);
-            
-            // Clear the input
-            input.value = '';
+            if (error) alert("Upload Error: " + error.message);
+            else {
+                alert("Script Published!");
+                document.getElementById('scriptName').value = '';
+                document.getElementById('scriptDesc').value = '';
+                document.getElementById('scriptCode').value = '';
+                loadScripts();
+            }
         }
+
+        async function loadScripts() {
+            const { data, error } = await _supabase.from('scripts').select('*').order('created_at', { ascending: false });
+            if (error) return console.error(error);
+
+            const feed = document.getElementById('feed');
+            feed.innerHTML = '';
+
+            data.forEach(item => {
+                const card = document.createElement('div');
+                card.className = 'script-card';
+                card.innerHTML = `
+                    <h3 class="pixel script-title">${item.name}</h3>
+                    <p class="script-desc">${item.description || 'No description provided.'}</p>
+                    <div style="display:flex; gap:10px;">
+                        <button onclick="copyCode(\`${item.code.replace(/`/g, '\\`').replace(/\$/g, '\\$')}\`)">Copy Code</button>
+                    </div>
+                `;
+                feed.appendChild(card);
+            });
+        }
+
+        function copyCode(code) {
+            navigator.clipboard.writeText(code);
+            alert("Script copied to clipboard!");
+        }
+
+        // Initialize view
+        checkUser();
     </script>
 </body>
 </html>
