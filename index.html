@@ -1,172 +1,574 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Script Realm | Hub</title>
-    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&family=Inter:wght@300;400;600&display=swap" rel="stylesheet">
-    <style>
-        :root {
-            --bg: #0b051a; --card-bg: #160b2e; --accent: #bc13fe;
-            --accent-glow: rgba(188, 19, 254, 0.5); --text-main: #f0f0f0; --text-dim: #a0a0a0;
-        }
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Script Realm</title>
 
-        body {
-            background-color: var(--bg); color: var(--text-main); font-family: 'Inter', sans-serif;
-            margin: 0; padding: 0; line-height: 1.6;
-            background-image: radial-gradient(circle at top, #1c0f3d 0%, var(--bg) 100%);
-        }
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
-        .header { text-align: center; padding: 30px 20px; }
-        .logo { font-family: 'Orbitron', sans-serif; font-size: 2rem; color: #fff; text-shadow: 0 0 15px var(--accent-glow); letter-spacing: 3px; }
-        .container { max-width: 600px; margin: 0 auto; padding: 20px; }
+<link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@500;700&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
 
-        /* Form Styles */
-        .glass-panel {
-            background: var(--card-bg); border: 1px solid rgba(255, 255, 255, 0.1);
-            padding: 20px; border-radius: 12px; margin-bottom: 30px;
-        }
+<style>
+:root{
+    --bg:#070311;
+    --bg2:#130726;
+    --card:#160b2f;
+    --accent:#bc13fe;
+    --accent2:#7f00ff;
+    --text:#f2f2f2;
+    --dim:#a0a0b8;
+}
 
-        input, textarea {
-            width: 100%; padding: 12px; background: rgba(0, 0, 0, 0.3);
-            border: 1px solid rgba(255, 255, 255, 0.1); color: white;
-            border-radius: 8px; margin-bottom: 10px; box-sizing: border-box;
-            font-family: inherit;
-        }
+*{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+}
 
-        button.primary-btn {
-            width: 100%; padding: 12px; background: var(--accent); color: white;
-            border: none; border-radius: 8px; font-family: 'Orbitron', sans-serif;
-            cursor: pointer; font-weight: bold;
-        }
+body{
+    font-family:'Inter',sans-serif;
+    background:
+    radial-gradient(circle at top,#241046 0%,#12051f 35%,#070311 100%);
+    color:var(--text);
+    overflow-x:hidden;
+    min-height:100vh;
+}
 
-        /* Script Card Styles */
-        .script-card {
-            background: var(--card-bg); border: 1px solid rgba(255, 255, 255, 0.05);
-            padding: 15px; border-radius: 12px; margin-bottom: 15px;
-        }
+/* PARTICLES */
 
-        .card-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; }
-        .script-title { font-family: 'Orbitron', sans-serif; font-size: 1.1rem; margin: 0; color: #fff; }
-        
-        .copy-btn {
-            background: rgba(255,255,255,0.1); border: 1px solid var(--accent);
-            color: var(--text-main); padding: 6px 12px; border-radius: 6px;
-            cursor: pointer; font-size: 14px; display: flex; align-items: center; gap: 5px;
-        }
+.particles{
+    position:fixed;
+    inset:0;
+    overflow:hidden;
+    z-index:-1;
+}
 
-        .script-desc { color: var(--text-dim); font-size: 0.85rem; margin-bottom: 10px; }
+.particle{
+    position:absolute;
+    width:2px;
+    height:2px;
+    background:#c76fff;
+    border-radius:50%;
+    opacity:.5;
+    animation:float linear infinite;
+}
 
-        /* Hidden Code Wrapper */
-        .code-wrapper {
-            margin-top: 10px; display: none; /* Hidden by default */
-            background: #000; border-radius: 6px; padding: 15px;
-            border: 1px solid #331452; overflow-x: auto;
-        }
+@keyframes float{
+    from{
+        transform:translateY(100vh);
+    }
+    to{
+        transform:translateY(-100px);
+    }
+}
 
-        .code-wrapper pre { 
-            margin: 0; font-family: 'Courier New', monospace; font-size: 12px; 
-            color: #bc13fe; white-space: pre-wrap; word-break: break-all; 
-        }
+/* HEADER */
 
-        .toggle-btn {
-            background: transparent; border: none; color: var(--accent);
-            cursor: pointer; font-size: 13px; padding: 5px 0;
-            text-decoration: underline; font-weight: 600; font-family: inherit;
-        }
-    </style>
+.header{
+    text-align:center;
+    padding:50px 20px 20px;
+}
+
+.logo{
+    font-family:'Orbitron',sans-serif;
+    font-size:3rem;
+    letter-spacing:6px;
+    color:white;
+    text-shadow:
+    0 0 10px #bc13fe,
+    0 0 25px #bc13fe,
+    0 0 50px rgba(188,19,254,.7);
+}
+
+.subtitle{
+    color:var(--dim);
+    margin-top:10px;
+    font-size:.95rem;
+}
+
+/* CONTAINER */
+
+.container{
+    max-width:900px;
+    margin:auto;
+    padding:20px;
+}
+
+/* GLASS */
+
+.glass{
+    background:rgba(22,11,47,.7);
+    backdrop-filter:blur(14px);
+    border:1px solid rgba(255,255,255,.08);
+    border-radius:20px;
+    box-shadow:
+    0 0 25px rgba(188,19,254,.08),
+    inset 0 0 20px rgba(255,255,255,.02);
+}
+
+/* FORM */
+
+.upload-panel{
+    padding:25px;
+    margin-bottom:30px;
+}
+
+input,
+textarea{
+    width:100%;
+    background:rgba(0,0,0,.25);
+    border:1px solid rgba(255,255,255,.08);
+    padding:14px;
+    color:white;
+    border-radius:12px;
+    margin-bottom:12px;
+    resize:none;
+    transition:.25s;
+    font-family:inherit;
+}
+
+textarea{
+    min-height:120px;
+}
+
+input:focus,
+textarea:focus{
+    outline:none;
+    border-color:var(--accent);
+    box-shadow:0 0 15px rgba(188,19,254,.2);
+}
+
+/* BUTTON */
+
+.primary-btn{
+    width:100%;
+    padding:14px;
+    border:none;
+    border-radius:14px;
+    background:linear-gradient(90deg,var(--accent2),var(--accent));
+    color:white;
+    font-family:'Orbitron',sans-serif;
+    font-weight:bold;
+    cursor:pointer;
+    transition:.3s;
+    letter-spacing:1px;
+}
+
+.primary-btn:hover{
+    transform:translateY(-2px);
+    box-shadow:0 0 20px rgba(188,19,254,.5);
+}
+
+/* SEARCH */
+
+.topbar{
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    margin-bottom:20px;
+    gap:10px;
+}
+
+.search{
+    flex:1;
+}
+
+.stats{
+    color:var(--dim);
+    font-size:.9rem;
+}
+
+/* CARD */
+
+.script-card{
+    padding:20px;
+    margin-bottom:18px;
+    transition:.3s;
+    animation:fade .4s ease;
+}
+
+.script-card:hover{
+    transform:translateY(-3px);
+    border-color:rgba(188,19,254,.4);
+    box-shadow:0 0 30px rgba(188,19,254,.15);
+}
+
+@keyframes fade{
+    from{
+        opacity:0;
+        transform:translateY(10px);
+    }
+    to{
+        opacity:1;
+        transform:translateY(0);
+    }
+}
+
+.card-header{
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    gap:10px;
+}
+
+.script-title{
+    font-family:'Orbitron',sans-serif;
+    font-size:1.1rem;
+}
+
+.script-desc{
+    color:var(--dim);
+    margin-top:10px;
+    font-size:.92rem;
+}
+
+/* ACTIONS */
+
+.actions{
+    display:flex;
+    gap:10px;
+    margin-top:15px;
+}
+
+.action-btn{
+    background:rgba(255,255,255,.05);
+    border:1px solid rgba(188,19,254,.35);
+    color:white;
+    padding:8px 14px;
+    border-radius:10px;
+    cursor:pointer;
+    transition:.25s;
+}
+
+.action-btn:hover{
+    background:rgba(188,19,254,.15);
+}
+
+/* CODE */
+
+.code-wrapper{
+    margin-top:15px;
+    background:#05010d;
+    border:1px solid #30114d;
+    border-radius:14px;
+    display:none;
+    overflow:hidden;
+}
+
+.code-top{
+    padding:10px 14px;
+    border-bottom:1px solid rgba(255,255,255,.05);
+    color:#d28dff;
+    font-size:.85rem;
+}
+
+.code-wrapper pre{
+    padding:16px;
+    overflow:auto;
+    color:#d786ff;
+    font-size:.83rem;
+    line-height:1.5;
+}
+
+/* MOBILE */
+
+@media(max-width:700px){
+
+.logo{
+    font-size:2rem;
+}
+
+.topbar{
+    flex-direction:column;
+    align-items:stretch;
+}
+
+.card-header{
+    flex-direction:column;
+    align-items:flex-start;
+}
+
+.actions{
+    width:100%;
+}
+
+.action-btn{
+    flex:1;
+}
+
+}
+</style>
 </head>
+
 <body>
 
-    <div class="header"><h1 class="logo">SCRIPT REALM</h1></div>
+<div class="particles" id="particles"></div>
 
-    <div class="container">
-        <div class="glass-panel">
-            <input type="text" id="scriptName" placeholder="Title">
-            <textarea id="scriptDesc" placeholder="Description"></textarea>
-            <textarea id="scriptCode" placeholder="Paste Lua Code" style="height: 100px; font-family: monospace;"></textarea>
-            <button class="primary-btn" onclick="uploadScript()">Publish</button>
-        </div>
+<div class="header">
+    <h1 class="logo">SCRIPT REALM</h1>
+    <p class="subtitle">
+        Upload • Share • Copy • Explore
+    </p>
+</div>
 
-        <div id="feed">Loading scripts...</div>
+<div class="container">
+
+    <div class="glass upload-panel">
+
+        <input type="text" id="scriptName" placeholder="Script Title">
+
+        <textarea id="scriptDesc" placeholder="Description"></textarea>
+
+        <textarea
+        id="scriptCode"
+        placeholder="Paste your Lua script here..."
+        style="font-family:monospace;"
+        ></textarea>
+
+        <button class="primary-btn" onclick="uploadScript()">
+            PUBLISH SCRIPT
+        </button>
+
     </div>
 
-    <script>
-        const supabaseUrl = 'https://pgzrmmrkgxefocxdcxli.supabase.co';
-        const supabaseKey = 'sb_publishable_dwlWhrgvEF6ngaJ5I0OXZA_hQ0F_Gij'; 
-        const _supabase = supabase.createClient(supabaseUrl, supabaseKey);
+    <div class="topbar">
 
-        async function uploadScript() {
-            const name = document.getElementById('scriptName').value;
-            const description = document.getElementById('scriptDesc').value;
-            const code = document.getElementById('scriptCode').value;
-            if(!name || !code) return alert("Title and Code required!");
+        <input
+        class="search"
+        id="searchInput"
+        type="text"
+        placeholder="Search scripts..."
+        oninput="filterScripts()"
+        >
 
-            const { error } = await _supabase.from('scripts').insert([{ name, description, code }]);
-            if (error) alert(error.message);
-            else { location.reload(); }
-        }
+        <div class="stats">
+            <span id="scriptCount">0</span> Scripts
+        </div>
 
-        async function loadScripts() {
-            const { data, error } = await _supabase.from('scripts').select('*').order('created_at', { ascending: false });
-            if (error) { document.getElementById('feed').innerText = "Error loading scripts."; return; }
+    </div>
 
-            const feed = document.getElementById('feed');
-            feed.innerHTML = '';
+    <div id="feed"></div>
 
-            data.forEach(item => {
-                const card = document.createElement('div');
-                card.className = 'script-card';
-                
-                // Create Title Header
-                const header = document.createElement('div');
-                header.className = 'card-header';
-                header.innerHTML = `<h3 class="script-title">${item.name}</h3>`;
-                
-                // Create Copy Button
-                const copyBtn = document.createElement('button');
-                copyBtn.className = 'copy-btn';
-                copyBtn.innerHTML = `📄 Copy`;
-                copyBtn.onclick = () => {
-                    navigator.clipboard.writeText(item.code);
-                    copyBtn.innerHTML = "✅ Copied!";
-                    setTimeout(() => { copyBtn.innerHTML = "📄 Copy"; }, 2000);
-                };
-                header.appendChild(copyBtn);
-                
-                // Create Toggle Button
-                const toggleBtn = document.createElement('button');
-                toggleBtn.className = 'toggle-btn';
-                toggleBtn.innerText = "See more...";
-                
-                // Create Code Area
-                const wrapper = document.createElement('div');
-                wrapper.className = 'code-wrapper';
-                const pre = document.createElement('pre');
-                pre.textContent = item.code; // Securely set the text
-                wrapper.appendChild(pre);
+</div>
 
-                toggleBtn.onclick = () => {
-                    if (wrapper.style.display === "block") {
-                        wrapper.style.display = "none";
-                        toggleBtn.innerText = "See more...";
-                    } else {
-                        wrapper.style.display = "block";
-                        toggleBtn.innerText = "Hide script";
-                    }
-                };
+<script>
 
-                card.appendChild(header);
-                card.innerHTML += `<p class="script-desc">${item.description || 'No description.'}</p>`;
-                card.appendChild(toggleBtn);
-                card.appendChild(wrapper);
-                
-                feed.appendChild(card);
-            });
-        }
+const supabaseUrl =
+'https://pgzrmmrkgxefocxdcxli.supabase.co';
 
-        loadScripts();
-    </script>
+const supabaseKey =
+'sb_publishable_dwlWhrgvEF6ngaJ5I0OXZA_hQ0F_Gij';
+
+const _supabase =
+supabase.createClient(supabaseUrl, supabaseKey);
+
+let allScripts = [];
+
+/* PARTICLES */
+
+const particles = document.getElementById("particles");
+
+for(let i=0;i<80;i++){
+
+    const p = document.createElement("div");
+    p.className = "particle";
+
+    p.style.left = Math.random()*100+"%";
+    p.style.animationDuration =
+    (10 + Math.random()*20)+"s";
+
+    p.style.opacity = Math.random();
+
+    p.style.width =
+    p.style.height =
+    (1 + Math.random()*3)+"px";
+
+    particles.appendChild(p);
+}
+
+/* UPLOAD */
+
+async function uploadScript(){
+
+    const name =
+    document.getElementById('scriptName').value;
+
+    const description =
+    document.getElementById('scriptDesc').value;
+
+    const code =
+    document.getElementById('scriptCode').value;
+
+    if(!name || !code){
+
+        alert("Title and code required.");
+        return;
+    }
+
+    const { error } =
+    await _supabase
+    .from('scripts')
+    .insert([{ name, description, code }]);
+
+    if(error){
+
+        alert(error.message);
+
+    }else{
+
+        location.reload();
+    }
+}
+
+/* LOAD */
+
+async function loadScripts(){
+
+    const { data, error } =
+    await _supabase
+    .from('scripts')
+    .select('*')
+    .order('created_at',{ ascending:false });
+
+    if(error){
+
+        document.getElementById('feed')
+        .innerHTML = "Failed loading scripts.";
+
+        return;
+    }
+
+    allScripts = data;
+
+    renderScripts(data);
+}
+
+/* RENDER */
+
+function renderScripts(data){
+
+    const feed =
+    document.getElementById('feed');
+
+    document.getElementById('scriptCount')
+    .innerText = data.length;
+
+    feed.innerHTML = '';
+
+    data.forEach(item => {
+
+        const card =
+        document.createElement('div');
+
+        card.className =
+        'script-card glass';
+
+        card.innerHTML = `
+
+        <div class="card-header">
+
+            <h3 class="script-title">
+                ${item.name}
+            </h3>
+
+        </div>
+
+        <p class="script-desc">
+            ${item.description || 'No description.'}
+        </p>
+
+        <div class="actions">
+
+            <button class="action-btn copy-btn">
+                📄 Copy
+            </button>
+
+            <button class="action-btn toggle-btn">
+                👁 View
+            </button>
+
+        </div>
+
+        <div class="code-wrapper">
+
+            <div class="code-top">
+                Lua Script
+            </div>
+
+            <pre></pre>
+
+        </div>
+        `;
+
+        const pre =
+        card.querySelector('pre');
+
+        pre.textContent = item.code;
+
+        const copyBtn =
+        card.querySelector('.copy-btn');
+
+        copyBtn.onclick = () => {
+
+            navigator.clipboard.writeText(item.code);
+
+            copyBtn.innerText = "✅ Copied";
+
+            setTimeout(()=>{
+                copyBtn.innerText = "📄 Copy";
+            },2000);
+        };
+
+        const toggleBtn =
+        card.querySelector('.toggle-btn');
+
+        const wrapper =
+        card.querySelector('.code-wrapper');
+
+        toggleBtn.onclick = () => {
+
+            if(wrapper.style.display === "block"){
+
+                wrapper.style.display = "none";
+                toggleBtn.innerText = "👁 View";
+
+            }else{
+
+                wrapper.style.display = "block";
+                toggleBtn.innerText = "❌ Hide";
+            }
+        };
+
+        feed.appendChild(card);
+    });
+}
+
+/* SEARCH */
+
+function filterScripts(){
+
+    const query =
+    document.getElementById('searchInput')
+    .value
+    .toLowerCase();
+
+    const filtered =
+    allScripts.filter(script =>
+
+        script.name.toLowerCase().includes(query) ||
+
+        (script.description || '')
+        .toLowerCase()
+        .includes(query)
+    );
+
+    renderScripts(filtered);
+}
+
+loadScripts();
+
+</script>
+
 </body>
 </html>
