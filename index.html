@@ -1,1096 +1,244 @@
 <!DOCTYPE html>
 <html lang="en">
-
-</head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-
-<title>Script Realm</title>
-
-<!-- Fonts -->
-<link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@500;700&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
-
-<!-- Highlight JS -->
-<link rel="stylesheet"
-href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/tokyo-night-dark.min.css">
-
-<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
-
-<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/lua.min.js"></script>
-
-<!-- Supabase -->
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-
-<style>
-
-:root{
-    --bg:#070311;
-    --bg2:#12061f;
-    --card:#150a2b;
-    --accent:#bc13fe;
-    --accent2:#8f3bff;
-    --text:#f2f2f2;
-    --dim:#9f9fb4;
-}
-
-*{
-    margin:0;
-    padding:0;
-    box-sizing:border-box;
-}
-
-body{
-    background:
-    radial-gradient(circle at top,
-    #241046 0%,
-    #130624 35%,
-    #070311 100%);
-
-    min-height:100vh;
-    overflow-x:hidden;
-    font-family:'Inter',sans-serif;
-    color:var(--text);
-}
-
-/* PORTAL */
-
-.portal{
-    position:fixed;
-    width:800px;
-    height:800px;
-
-    background:
-    radial-gradient(circle,
-    rgba(188,19,254,.25),
-    transparent 70%);
-
-    top:-350px;
-    left:50%;
-
-    transform:translateX(-50%);
-
-    filter:blur(50px);
-
-    z-index:-3;
-
-    animation:pulse 8s infinite;
-}
-
-@keyframes pulse{
-
-    0%{
-        transform:
-        translateX(-50%)
-        scale(1);
-    }
-
-    50%{
-        transform:
-        translateX(-50%)
-        scale(1.2);
-    }
-
-    100%{
-        transform:
-        translateX(-50%)
-        scale(1);
-    }
-}
-
-/* PARTICLES */
-
-.particles{
-    position:fixed;
-    inset:0;
-    overflow:hidden;
-    z-index:-2;
-}
-
-.particle{
-    position:absolute;
-    background:#bc13fe;
-    border-radius:50%;
-    opacity:.4;
-    animation:float linear infinite;
-}
-
-@keyframes float{
-
-    from{
-        transform:
-        translateY(100vh);
-    }
-
-    to{
-        transform:
-        translateY(-100px);
-    }
-}
-
-/* HEADER */
-
-.header{
-    text-align:center;
-    padding:60px 20px 30px;
-}
-
-.logo{
-    font-family:'Orbitron',sans-serif;
-    font-size:3.5rem;
-    letter-spacing:8px;
-
-    text-shadow:
-    0 0 15px #bc13fe,
-    0 0 40px rgba(188,19,254,.6);
-
-    animation:glow 4s infinite;
-}
-
-@keyframes glow{
-
-    0%{
-        text-shadow:
-        0 0 15px #bc13fe,
-        0 0 40px rgba(188,19,254,.6);
-    }
-
-    50%{
-        text-shadow:
-        0 0 25px #bc13fe,
-        0 0 70px rgba(188,19,254,.9);
-    }
-
-    100%{
-        text-shadow:
-        0 0 15px #bc13fe,
-        0 0 40px rgba(188,19,254,.6);
-    }
-}
-
-.subtitle{
-    margin-top:12px;
-    color:var(--dim);
-}
-
-/* CONTAINER */
-
-.container{
-    max-width:1000px;
-    margin:auto;
-    padding:20px;
-}
-
-/* GLASS */
-
-.glass{
-    background:rgba(21,10,43,.65);
-
-    backdrop-filter:blur(14px);
-
-    border:1px solid rgba(255,255,255,.06);
-
-    border-radius:24px;
-
-    box-shadow:
-    0 0 25px rgba(188,19,254,.08);
-}
-
-/* UPLOAD */
-
-.upload-panel{
-    padding:25px;
-    margin-bottom:25px;
-}
-
-input,
-textarea{
-    width:100%;
-    background:rgba(0,0,0,.2);
-
-    border:1px solid rgba(255,255,255,.08);
-
-    color:white;
-
-    padding:14px;
-
-    border-radius:14px;
-
-    margin-bottom:14px;
-
-    font-family:inherit;
-
-    transition:.25s;
-}
-
-textarea{
-    min-height:130px;
-    resize:vertical;
-}
-
-input:focus,
-textarea:focus{
-    outline:none;
-
-    border-color:var(--accent);
-
-    box-shadow:
-    0 0 15px rgba(188,19,254,.2);
-}
-
-/* BUTTON */
-
-.primary-btn{
-    width:100%;
-    padding:15px;
-
-    border:none;
-
-    border-radius:14px;
-
-    background:
-    linear-gradient(90deg,
-    var(--accent2),
-    var(--accent));
-
-    color:white;
-
-    font-family:'Orbitron',sans-serif;
-
-    font-weight:bold;
-
-    cursor:pointer;
-
-    transition:.3s;
-}
-
-.primary-btn:hover{
-    transform:translateY(-2px);
-
-    box-shadow:
-    0 0 20px rgba(188,19,254,.5);
-}
-
-/* TOPBAR */
-
-.topbar{
-    display:flex;
-    gap:15px;
-    align-items:center;
-    margin-bottom:20px;
-}
-
-.search{
-    flex:1;
-}
-
-.stats{
-    color:var(--dim);
-}
-
-/* CARD */
-
-.script-card{
-    padding:22px;
-    margin-bottom:18px;
-
-    transition:.3s;
-
-    animation:fade .4s ease;
-}
-
-.script-card:hover{
-    transform:translateY(-4px);
-
-    border-color:
-    rgba(188,19,254,.25);
-
-    box-shadow:
-    0 0 35px rgba(188,19,254,.14);
-}
-
-@keyframes fade{
-
-    from{
-        opacity:0;
-        transform:translateY(10px);
-    }
-
-    to{
-        opacity:1;
-        transform:translateY(0);
-    }
-}
-
-.card-header{
-    display:flex;
-    justify-content:space-between;
-    align-items:center;
-    gap:15px;
-}
-
-.script-title{
-    font-family:'Orbitron',sans-serif;
-    font-size:1.15rem;
-}
-
-.script-desc{
-    margin-top:12px;
-    color:var(--dim);
-    line-height:1.5;
-}
-
-/* TAGS */
-
-.tags{
-    display:flex;
-    flex-wrap:wrap;
-    gap:8px;
-    margin-top:15px;
-}
-
-.tag{
-    background:
-    rgba(188,19,254,.12);
-
-    border:
-    1px solid rgba(188,19,254,.25);
-
-    padding:6px 12px;
-
-    border-radius:999px;
-
-    font-size:.75rem;
-}
-
-/* ACTIONS */
-
-.actions{
-    display:flex;
-    flex-wrap:wrap;
-    gap:10px;
-    margin-top:18px;
-}
-
-.action-btn{
-    background:
-    rgba(255,255,255,.05);
-
-    border:
-    1px solid rgba(188,19,254,.25);
-
-    color:white;
-
-    padding:10px 15px;
-
-    border-radius:12px;
-
-    cursor:pointer;
-
-    transition:.25s;
-}
-
-.action-btn:hover{
-    background:
-    rgba(188,19,254,.12);
-}
-
-/* CODE */
-
-.code-wrapper{
-
-    margin-top:18px;
-
-    overflow:hidden;
-
-    max-height:0;
-
-    transition:.4s ease;
-
-    border-radius:16px;
-
-    border:
-    1px solid rgba(188,19,254,.15);
-}
-
-.editor-top{
-    display:flex;
-    justify-content:space-between;
-    align-items:center;
-
-    padding:12px 16px;
-
-    background:#10051c;
-
-    border-bottom:
-    1px solid rgba(255,255,255,.05);
-}
-
-pre{
-    margin:0 !important;
-    padding:18px !important;
-
-    max-height:500px;
-
-    overflow:auto;
-}
-
-/* MOBILE */
-
-@media(max-width:700px){
-
-    .logo{
-        font-size:2.2rem;
-    }
-
-    .topbar{
-        flex-direction:column;
-    }
-
-    .card-header{
-        flex-direction:column;
-        align-items:flex-start;
-    }
-
-    .actions{
-        width:100%;
-    }
-
-    .action-btn{
-        flex:1;
-    }
-}
-
-</style>
-
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Script Realm</title>
+
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@500;700&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/tokyo-night-dark.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/lua.min.js"></script>
+
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+    <style>
+        :root{
+            --bg:#070311; --bg2:#12061f; --card:#150a2b;
+            --accent:#bc13fe; --accent2:#8f3bff; --text:#f2f2f2; --dim:#9f9fb4;
+        }
+
+        *{ margin:0; padding:0; box-sizing:border-box; }
+
+        body{
+            background: radial-gradient(circle at top, #241046 0%, #130624 35%, #070311 100%);
+            min-height:100vh; overflow-x:hidden; font-family:'Inter',sans-serif; color:var(--text);
+        }
+
+        .portal{
+            position:fixed; width:800px; height:800px;
+            background: radial-gradient(circle, rgba(188,19,254,.25), transparent 70%);
+            top:-350px; left:50%; transform:translateX(-50%); filter:blur(50px); z-index:-3;
+            animation:pulse 8s infinite;
+        }
+
+        @keyframes pulse{ 0%, 100%{ transform: translateX(-50%) scale(1); } 50%{ transform: translateX(-50%) scale(1.2); } }
+
+        .particles{ position:fixed; inset:0; overflow:hidden; z-index:-2; pointer-events: none; }
+        .particle{ position:absolute; background:#bc13fe; border-radius:50%; opacity:.4; animation:float linear infinite; }
+        @keyframes float{ from{ transform: translateY(100vh); } to{ transform: translateY(-100px); } }
+
+        .header{ text-align:center; padding:60px 20px 30px; }
+        .logo{ font-family:'Orbitron',sans-serif; font-size:3.5rem; letter-spacing:8px; text-shadow: 0 0 15px #bc13fe; animation:glow 4s infinite; }
+        @keyframes glow{ 0%, 100%{ text-shadow: 0 0 15px #bc13fe; } 50%{ text-shadow: 0 0 25px #bc13fe, 0 0 50px rgba(188,19,254,.9); } }
+        .subtitle{ margin-top:12px; color:var(--dim); }
+
+        .container{ max-width:1000px; margin:auto; padding:20px; }
+        .glass{ background:rgba(21,10,43,.65); backdrop-filter:blur(14px); border:1px solid rgba(255,255,255,.06); border-radius:24px; box-shadow: 0 0 25px rgba(188,19,254,.08); }
+
+        .upload-panel{ padding:25px; margin-bottom:25px; }
+        input, textarea{ width:100%; background:rgba(0,0,0,.4); border:1px solid rgba(255,255,255,.08); color:white; padding:14px; border-radius:14px; margin-bottom:14px; font-family:inherit; transition:.25s; }
+        textarea{ min-height:100px; resize:vertical; }
+        input:focus, textarea:focus{ outline:none; border-color:var(--accent); box-shadow: 0 0 15px rgba(188,19,254,.2); }
+
+        .primary-btn{ width:100%; padding:15px; border:none; border-radius:14px; background: linear-gradient(90deg, var(--accent2), var(--accent)); color:white; font-family:'Orbitron',sans-serif; font-weight:bold; cursor:pointer; transition:.3s; }
+        .primary-btn:hover{ transform:translateY(-2px); box-shadow: 0 0 20px rgba(188,19,254,.5); }
+
+        .topbar{ display:flex; gap:15px; align-items:center; margin-bottom:20px; }
+        .search{ flex:1; }
+
+        .script-card{ padding:22px; margin-bottom:18px; transition:.3s; animation:fade .4s ease; position: relative; }
+        @keyframes fade{ from{ opacity:0; transform:translateY(10px); } to{ opacity:1; transform:translateY(0); } }
+
+        .card-header{ display:flex; justify-content:space-between; align-items:center; gap:15px; }
+        .script-title{ font-family:'Orbitron',sans-serif; font-size:1.15rem; }
+        .script-desc{ margin-top:12px; color:var(--dim); line-height:1.5; font-size: 0.9rem; }
+
+        .tags{ display:flex; flex-wrap:wrap; gap:8px; margin-top:15px; }
+        .tag{ background: rgba(188,19,254,.12); border: 1px solid rgba(188,19,254,.25); padding:4px 10px; border-radius:999px; font-size:.7rem; }
+
+        .actions{ display:flex; flex-wrap:wrap; gap:10px; margin-top:18px; }
+        .action-btn{ background: rgba(255,255,255,.05); border: 1px solid rgba(188,19,254,.25); color:white; padding:8px 14px; border-radius:10px; cursor:pointer; transition:.25s; font-size: 0.85rem; }
+        .action-btn:hover{ background: rgba(188,19,254,.15); }
+
+        .code-wrapper{ margin-top:18px; overflow:hidden; max-height:0; transition:.4s ease; border-radius:12px; border: 1px solid rgba(188,19,254,.15); background: #0c0415; }
+        .editor-top{ display:flex; justify-content:space-between; align-items:center; padding:10px 15px; background:#10051c; border-bottom: 1px solid rgba(255,255,255,.05); font-size: 0.8rem; color: var(--dim); }
+        pre{ margin:0 !important; padding:15px !important; max-height:400px; overflow:auto; }
+        code{ font-family: 'Consolas', monospace !important; }
+    </style>
 </head>
 
 <body>
+    <div class="portal"></div>
+    <div class="particles" id="particles"></div>
 
-<div class="portal"></div>
-
-<div class="particles" id="particles"></div>
-
-<div class="header">
-
-    <h1 class="logo">
-        SCRIPT REALM
-    </h1>
-
-    <p class="subtitle">
-        Upload • Share • Explore • Copy
-    </p>
-
-</div>
-
-<div class="container">
-
-    <!-- Upload -->
-
-    <div class="glass upload-panel">
-
-        <input
-        type="text"
-        id="scriptName"
-        placeholder="Script Title">
-
-        <textarea
-        id="scriptDesc"
-        placeholder="Description"></textarea>
-
-        <input
-        type="text"
-        id="scriptTags"
-        placeholder="Tags: GUI, ESP, PvP">
-
-        <textarea
-        id="scriptCode"
-        placeholder="Paste Lua Script Here..."
-        style="font-family:monospace;"></textarea>
-
-        <button
-        class="primary-btn"
-        onclick="uploadScript()">
-
-        PUBLISH SCRIPT
-
-        </button>
-
+    <div class="header">
+        <h1 class="logo">SCRIPT REALM</h1>
+        <p class="subtitle">Upload • Share • Explore • Copy</p>
     </div>
 
-    <!-- Search -->
-
-    <div class="topbar">
-
-        <input
-        type="text"
-        id="searchInput"
-        class="search"
-        placeholder="Search scripts..."
-        oninput="filterScripts()">
-
-        <div class="stats">
-            <span id="scriptCount">0</span>
-            Scripts
+    <div class="container">
+        <div class="glass upload-panel">
+            <input type="text" id="scriptName" placeholder="Script Title">
+            <textarea id="scriptDesc" placeholder="Description"></textarea>
+            <input type="text" id="scriptTags" placeholder="Tags (e.g. GUI, ESP, PvP)">
+            <textarea id="scriptCode" placeholder="Paste Lua Script Here..." style="font-family:monospace;"></textarea>
+            <button class="primary-btn" id="publishBtn" onclick="uploadScript()">PUBLISH SCRIPT</button>
         </div>
 
+        <div class="topbar">
+            <input type="text" id="searchInput" class="search" placeholder="Search scripts..." oninput="filterScripts()">
+            <div class="stats"><span id="scriptCount">0</span> Scripts</div>
+        </div>
+
+        <div id="feed">Loading scripts...</div>
     </div>
 
-    <!-- Feed -->
+    <script>
+        const supabaseUrl = 'https://pgzrmmrkgxefocxdcxli.supabase.co';
+        const supabaseKey = 'sb_publishable_dwlWhrgvEF6ngaJ5I0OXZA_hQ0F_Gij';
+        const _supabase = supabase.createClient(supabaseUrl, supabaseKey);
+        let allScripts = [];
 
-    <div id="feed"></div>
+        // Particles
+        const particlesContainer = document.getElementById("particles");
+        for(let i=0; i<60; i++){
+            const p = document.createElement("div");
+            p.className = "particle";
+            p.style.left = Math.random()*100 + "%";
+            p.style.width = p.style.height = (1 + Math.random()*3) + "px";
+            p.style.animationDuration = (10 + Math.random()*20) + "s";
+            particlesContainer.appendChild(p);
+        }
 
-</div>
+        function escapeHtml(text) {
+            const div = document.createElement('div');
+            div.textContent = text;
+            return div.innerHTML;
+        }
 
-<script>
+        async function uploadScript(){
+            const btn = document.getElementById('publishBtn');
+            const name = document.getElementById('scriptName').value;
+            const description = document.getElementById('scriptDesc').value;
+            const code = document.getElementById('scriptCode').value;
+            const tagsInput = document.getElementById('scriptTags').value;
 
-/* SUPABASE */
+            if(!name || !code){ alert("Title and code are required."); return; }
 
-const supabaseUrl =
-'https://pgzrmmrkgxefocxdcxli.supabase.co';
+            btn.innerText = "Publishing...";
+            const { error } = await _supabase.from('scripts').insert([{
+                name, description, code, 
+                tags: tagsInput, // Sending as string for now to match table
+                likes: 0, views: 0
+            }]);
 
-const supabaseKey =
-'sb_publishable_dwlWhrgvEF6ngaJ5I0OXZA_hQ0F_Gij';
+            if(error){ alert(error.message); btn.innerText = "PUBLISH SCRIPT"; }
+            else { location.reload(); }
+        }
 
-const _supabase =
-supabase.createClient(
-supabaseUrl,
-supabaseKey
-);
+        async function loadScripts(){
+            const { data, error } = await _supabase.from('scripts').select('*').order('created_at', { ascending:false });
+            if(error){ document.getElementById('feed').innerHTML = "Check your Supabase columns (likes, views, tags)!"; return; }
+            allScripts = data;
+            renderScripts(data);
+        }
 
-let allScripts = [];
+        function renderScripts(data){
+            const feed = document.getElementById('feed');
+            feed.innerHTML = '';
+            document.getElementById('scriptCount').innerText = data.length;
 
-/* PARTICLES */
+            data.forEach(item => {
+                const card = document.createElement('div');
+                card.className = 'script-card glass';
+                card.innerHTML = `
+                    <div class="card-header">
+                        <h3 class="script-title">${item.name}</h3>
+                        <div class="stats">👁 ${item.views || 0}</div>
+                    </div>
+                    <p class="script-desc">${item.description || 'No description.'}</p>
+                    <div class="tags">${item.tags ? `<span class="tag">${item.tags}</span>` : ''}</div>
+                    <div class="actions">
+                        <button class="action-btn copy-btn">📄 Copy</button>
+                        <button class="action-btn like-btn">❤️ ${item.likes || 0}</button>
+                        <button class="action-btn view-btn">👁 View</button>
+                        <button class="action-btn download-btn">⬇ Download</button>
+                    </div>
+                    <div class="code-wrapper">
+                        <div class="editor-top"><span>script.lua</span></div>
+                        <pre><code class="language-lua">${escapeHtml(item.code)}</code></pre>
+                    </div>
+                `;
 
-const particles =
-document.getElementById("particles");
+                // Copy Logic
+                card.querySelector('.copy-btn').onclick = (e) => {
+                    navigator.clipboard.writeText(item.code);
+                    e.target.innerText = "✅ Copied";
+                    setTimeout(() => e.target.innerText = "📄 Copy", 2000);
+                };
 
-for(let i=0;i<90;i++){
+                // View/Toggle Logic
+                const viewBtn = card.querySelector('.view-btn');
+                const wrapper = card.querySelector('.code-wrapper');
+                viewBtn.onclick = async () => {
+                    if(wrapper.style.maxHeight && wrapper.style.maxHeight !== "0px"){
+                        wrapper.style.maxHeight = "0px";
+                        viewBtn.innerText = "👁 View";
+                    } else {
+                        wrapper.style.maxHeight = "1000px";
+                        viewBtn.innerText = "❌ Hide";
+                        // Update views in background
+                        _supabase.from('scripts').update({ views: (item.views || 0) + 1 }).eq('id', item.id).then();
+                    }
+                };
 
-    const p =
-    document.createElement("div");
+                // Like Logic
+                const likeBtn = card.querySelector('.like-btn');
+                likeBtn.onclick = async () => {
+                    const liked = localStorage.getItem('liked_'+item.id);
+                    if(liked) return alert("Already liked!");
+                    
+                    const newLikes = (item.likes || 0) + 1;
+                    const { error } = await _supabase.from('scripts').update({ likes: newLikes }).eq('id', item.id);
+                    if(!error) {
+                        likeBtn.innerText = "❤️ " + newLikes;
+                        localStorage.setItem('liked_'+item.id, true);
+                        likeBtn.style.opacity = "0.5";
+                    }
+                };
 
-    p.className = "particle";
+                // Download Logic
+                card.querySelector('.download-btn').onclick = () => {
+                    const blob = new Blob([item.code], {type: 'text/plain'});
+                    const url = window.URL.createObjectURL(blob);
+                    const a = document.createElement('a');
+                    a.href = url; a.download = item.name + ".lua"; a.click();
+                };
 
-    p.style.left =
-    Math.random()*100 + "%";
+                feed.appendChild(card);
+            });
+            hljs.highlightAll();
+        }
 
-    p.style.width =
-    p.style.height =
-    (1 + Math.random()*3) + "px";
-
-    p.style.animationDuration =
-    (10 + Math.random()*20) + "s";
-
-    particles.appendChild(p);
-}
-
-/* ESCAPE */
-
-function escapeHtml(text){
-
-    return text
-
-    .replace(/&/g,"&amp;")
-    .replace(/</g,"&lt;")
-    .replace(/>/g,"&gt;");
-}
-
-/* UPLOAD */
-
-async function uploadScript(){
-
-    const btn =
-    document.querySelector('.primary-btn');
-
-    btn.innerText =
-    "Publishing...";
-
-    const name =
-    document.getElementById('scriptName')
-    .value;
-
-    const description =
-    document.getElementById('scriptDesc')
-    .value;
-
-    const code =
-    document.getElementById('scriptCode')
-    .value;
-
-    const tags =
-    document.getElementById('scriptTags')
-    .value
-    .split(',')
-    .map(t => t.trim());
-
-    if(!name || !code){
-
-        alert("Title and code required.");
-
-        btn.innerText =
-        "PUBLISH SCRIPT";
-
-        return;
-    }
-
-    const { error } =
-    await _supabase
-    .from('scripts')
-    .insert([{
-
-        name,
-        description,
-        code,
-        tags,
-        likes:0,
-        views:0
-
-    }]);
-
-    if(error){
-
-        alert(error.message);
-
-        btn.innerText =
-        "PUBLISH SCRIPT";
-
-    }else{
-
-        btn.innerText =
-        "Published!";
+        function filterScripts(){
+            const query = document.getElementById('searchInput').value.toLowerCase();
+            const filtered = allScripts.filter(s => s.name.toLowerCase().includes(query) || (s.description || '').toLowerCase().includes(query));
+            renderScripts(filtered);
+        }
 
         loadScripts();
-    }
-}
-
-/* LOAD */
-
-async function loadScripts(){
-
-    const { data, error } =
-
-    await _supabase
-
-    .from('scripts')
-
-    .select('*')
-
-    .order(
-    'created_at',
-    { ascending:false }
-    );
-
-    if(error){
-
-        document.getElementById('feed')
-        .innerHTML =
-        "Failed loading scripts.";
-
-        return;
-    }
-
-    allScripts = data;
-
-    renderScripts(data);
-}
-
-/* RENDER */
-
-function renderScripts(data){
-
-    const feed =
-    document.getElementById('feed');
-
-    feed.innerHTML = '';
-
-    document.getElementById('scriptCount')
-    .innerText = data.length;
-
-    data.forEach(item => {
-
-        const card =
-        document.createElement('div');
-
-        card.className =
-        'script-card glass';
-
-        card.innerHTML = `
-
-        <div class="card-header">
-
-            <h3 class="script-title">
-                ${item.name}
-            </h3>
-
-            <div class="stats">
-
-                👁 ${item.views || 0}
-
-            </div>
-
-        </div>
-
-        <p class="script-desc">
-
-            ${item.description || 'No description.'}
-
-        </p>
-
-        <div class="tags"></div>
-
-        <div class="actions">
-
-            <button class="action-btn copy-btn">
-                📄 Copy
-            </button>
-
-            <button class="action-btn like-btn">
-                ❤️ ${item.likes || 0}
-            </button>
-
-            <button class="action-btn view-btn">
-                👁 View
-            </button>
-
-            <button class="action-btn download-btn">
-                ⬇ Download
-            </button>
-
-        </div>
-
-        <div class="code-wrapper">
-
-            <div class="editor-top">
-
-                <span>script.lua</span>
-
-                <button
-                class="action-btn fullscreen-btn">
-
-                ⛶
-
-                </button>
-
-            </div>
-
-            <pre></pre>
-
-        </div>
-        `;
-
-        /* TAGS */
-
-        const tagsDiv =
-        card.querySelector('.tags');
-
-        (item.tags || [])
-        .forEach(tag => {
-
-            const el =
-            document.createElement('span');
-
-            el.className =
-            'tag';
-
-            el.innerText =
-            tag;
-
-            tagsDiv.appendChild(el);
-        });
-
-        /* CODE */
-
-        const pre =
-        card.querySelector('pre');
-
-        pre.innerHTML =
-
-        `<code class="language-lua">
-
-        ${escapeHtml(item.code)}
-
-        </code>`;
-
-        /* COPY */
-
-        const copyBtn =
-        card.querySelector('.copy-btn');
-
-        copyBtn.onclick = () => {
-
-            navigator.clipboard
-            .writeText(item.code);
-
-            copyBtn.innerText =
-            "✅ Copied";
-
-            setTimeout(()=>{
-
-                copyBtn.innerText =
-                "📄 Copy";
-
-            },2000);
-        };
-
-/* =========================
-   LIKE SYSTEM (NO DUPLICATES)
-========================= */
-
-const likeBtn =
-card.querySelector('.like-btn');
-
-/* Get liked scripts from browser */
-
-const likedScripts =
-JSON.parse(
-localStorage.getItem('likedScripts') || '[]'
-);
-
-/* Already liked */
-
-if(likedScripts.includes(item.id)){
-
-    likeBtn.innerText =
-    `❤️ ${item.likes || 0}`;
-
-    likeBtn.disabled = true;
-
-    likeBtn.style.opacity = ".6";
-}
-
-/* Like button click */
-
-likeBtn.onclick = async () => {
-
-    /* Prevent duplicate likes */
-
-    if(likedScripts.includes(item.id)){
-
-        alert("Already liked.");
-        return;
-    }
-
-    /* Add like */
-
-    item.likes =
-    (item.likes || 0) + 1;
-
-    /* Update UI */
-
-    likeBtn.innerText =
-    `❤️ ${item.likes}`;
-
-    /* Save to localStorage */
-
-    likedScripts.push(item.id);
-
-    localStorage.setItem(
-        'likedScripts',
-        JSON.stringify(likedScripts)
-    );
-
-    /* Disable button */
-
-    likeBtn.disabled = true;
-
-    likeBtn.style.opacity = ".6";
-
-    /* Update Supabase */
-
-    await _supabase
-
-    .from('scripts')
-
-    .update({
-        likes:item.likes
-    })
-
-    .eq('id',item.id);
-};
-
-
-
-/* =========================
-   VIEW SYSTEM (NO DUPLICATES)
-========================= */
-
-const viewBtn =
-card.querySelector('.view-btn');
-
-const wrapper =
-card.querySelector('.code-wrapper');
-
-/* Get viewed scripts */
-
-const viewedScripts =
-JSON.parse(
-localStorage.getItem('viewedScripts') || '[]'
-);
-
-/* View button */
-
-viewBtn.onclick =
-async () => {
-
-    /* CLOSE */
-
-    if(
-        wrapper.style.maxHeight &&
-        wrapper.style.maxHeight !== "0px"
-    ){
-
-        wrapper.style.maxHeight =
-        "0px";
-
-        viewBtn.innerText =
-        "👁 View";
-
-    }
-
-    /* OPEN */
-
-    else{
-
-        wrapper.style.maxHeight =
-        wrapper.scrollHeight + "px";
-
-        viewBtn.innerText =
-        "❌ Hide";
-
-        /* Prevent duplicate views */
-
-        if(!viewedScripts.includes(item.id)){
-
-            /* Save viewed */
-
-            viewedScripts.push(item.id);
-
-            localStorage.setItem(
-                'viewedScripts',
-                JSON.stringify(viewedScripts)
-            );
-
-            /* Add view */
-
-            item.views =
-            (item.views || 0) + 1;
-
-            /* Update Supabase */
-
-            await _supabase
-
-            .from('scripts')
-
-            .update({
-                views:item.views
-            })
-
-            .eq('id',item.id);
-        }
-    }
-};
-
-        /* DOWNLOAD */
-
-        const downloadBtn =
-        card.querySelector('.download-btn');
-
-        downloadBtn.onclick = () => {
-
-            const blob =
-            new Blob(
-            [item.code],
-            {
-                type:'text/plain'
-            });
-
-            const a =
-            document.createElement('a');
-
-            a.href =
-            URL.createObjectURL(blob);
-
-            a.download =
-            item.name + ".lua";
-
-            a.click();
-        };
-
-        /* FULLSCREEN */
-
-        const fullBtn =
-        card.querySelector('.fullscreen-btn');
-
-        fullBtn.onclick = () => {
-
-            wrapper.requestFullscreen();
-        };
-
-        feed.appendChild(card);
-    });
-
-    hljs.highlightAll();
-}
-
-/* SEARCH */
-
-function filterScripts(){
-
-    const query =
-
-    document
-    .getElementById('searchInput')
-
-    .value
-
-    .toLowerCase();
-
-    const filtered =
-
-    allScripts.filter(script =>
-
-        script.name
-        .toLowerCase()
-        .includes(query)
-
-        ||
-
-        (script.description || '')
-        .toLowerCase()
-        .includes(query)
-    );
-
-    renderScripts(filtered);
-}
-
-/* REALTIME */
-
-_supabase
-
-.channel('scripts-feed')
-
-.on(
-'supabase_changes',
-
-{
-event:'*',
-schema:'public',
-table:'scripts'
-},
-
-payload => {
-
-    loadScripts();
-}
-)
-
-.subscribe();
-
-/* START */
-
-loadScripts();
-
-</script>
-
+    </script>
 </body>
 </html>
